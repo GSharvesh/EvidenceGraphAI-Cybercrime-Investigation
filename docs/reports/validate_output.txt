@@ -1,5 +1,5 @@
 ========================================================
-      EvidenceGraphAI Phase 0 Full Validation Suite     
+      EvidenceGraphAI Phase 0 Full Validation Suite
 ========================================================
 
 [1/4] Code Linting & Formatting Check (Ruff & Black)...
@@ -28,5 +28,5 @@ TOTAL COVERAGE: 93% (381 statements, 26 missed)
 ======================= 37 passed, 2 warnings in 1.61s ========================
 
 ========================================================
-  [SUCCESS] All Phase 0 Validation Checks Passed Cleanly! 
+  [SUCCESS] All Phase 0 Validation Checks Passed Cleanly!
 ========================================================

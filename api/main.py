@@ -2,7 +2,7 @@
 
 import time
 import uuid
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 
 import structlog
 from fastapi import FastAPI, Request, Response, status
@@ -43,7 +43,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def correlation_id_and_logging_middleware(
-    request: Request, call_next: Callable
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
 ) -> Response:
     """Middleware adding correlation ID tracking and request logging."""
     correlation_id = request.headers.get("X-Correlation-ID") or str(uuid.uuid4())

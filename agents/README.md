@@ -1,6 +1,6 @@
 # EvidenceGraphAI Agents Architecture
 
-This directory contains modular agent components for EvidenceGraphAI. 
+This directory contains modular agent components for EvidenceGraphAI.
 
 ## Phase 0 Scope Notice
 In Phase 0 (Foundation & Setup), no agent business logic is implemented. All agent subdirectories contain placeholder `__init__.py` files as required by **AC-27**. Agent implementation will occur sequentially in Phase 1 through Phase 8.

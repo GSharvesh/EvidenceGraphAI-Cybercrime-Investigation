@@ -4,7 +4,7 @@ import uuid
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from neo4j import Driver, GraphDatabase, Transaction
 from neo4j.exceptions import ClientError, ConstraintError, DriverError, Neo4jError
@@ -279,7 +279,7 @@ class GraphClient:
         cypher = "MATCH (n {id: $node_id}) RETURN properties(n) AS props"
         records = self.query(cypher, {"node_id": node_id}, tx=tx)
         if records and "props" in records[0]:
-            return records[0]["props"]
+            return cast(dict[str, Any], records[0]["props"])
         return None
 
     def get_edge(
@@ -297,5 +297,5 @@ class GraphClient:
         cypher = "MATCH ()-[r {id: $edge_id}]->() RETURN properties(r) AS props"
         records = self.query(cypher, {"edge_id": edge_id}, tx=tx)
         if records and "props" in records[0]:
-            return records[0]["props"]
+            return cast(dict[str, Any], records[0]["props"])
         return None
