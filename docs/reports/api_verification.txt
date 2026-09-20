@@ -1,0 +1,20 @@
+=== API Verification Evidence ===
+
+1. GET /
+Status: 200
+Headers X-Correlation-ID: 3b7a102d-7406-44e6-89b0-8141cc8a428a
+Body: {"name":"EvidenceGraphAI","version":"0.1.0","environment":"development"}
+
+2. GET /health
+Status: 503
+Body: {"status":"unhealthy","services":{"neo4j":"unhealthy","postgres":"unhealthy","redis":"unhealthy","minio":"unhealthy"}}
+
+3. GET /metrics
+Status: 200
+Body Sample:
+# HELP python_gc_objects_collected_total Objects collected during gc
+# TYPE python_gc_objects_collected_total counter
+python_gc_objects_collected_total{generation="0"} 2180.0
+python_gc_objects_collected_total{generation="1"} 5201.0
+python_gc_objects_collected_total{generation="2"} 0.0
+# HELP python_...

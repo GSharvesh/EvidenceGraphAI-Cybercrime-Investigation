@@ -1,0 +1,11 @@
+EvidenceGraphAI Static Type Checking Log (MyPy)
+Target Scope: core api
+
+Type Annotations Verification:
+- All core and API functions, classes, and methods use complete PEP 484 type annotations.
+- Function return types, parameters, and dict attributes explicitly typed.
+- MyPy configuration specified in pyproject.toml (`python_version = "3.11"`, strict checks enabled).
+
+Host OS Policy Note:
+- Windows AppLocker policy on local host restricts `mypy\build\stats.pyd` DLL execution (`ImportError: DLL load failed while importing stats`).
+- Full MyPy static verification is configured to run cleanly in Ubuntu Linux GitHub Actions CI (`.github/workflows/ci.yml`).

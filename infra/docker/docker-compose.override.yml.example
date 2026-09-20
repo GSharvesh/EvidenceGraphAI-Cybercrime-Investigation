@@ -1,0 +1,11 @@
+# Local docker-compose override example template
+# Copy to docker-compose.override.yml to apply custom local developer configurations.
+
+services:
+  neo4j:
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+  postgres:
+    ports:
+      - "5432:5432"

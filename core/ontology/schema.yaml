@@ -1,0 +1,194 @@
+version: "1.0.0"
+title: "EvidenceGraphAI Ontology Definition Schema"
+description: "Formal machine-readable ontology defining 11 node types and 14 relationship types for cybercrime evidence graphs."
+
+nodes:
+  CVE:
+    description: "Common Vulnerabilities and Exposures record"
+    properties:
+      id: {type: "string", required: true, description: "CVE Identifier e.g. CVE-2024-1234"}
+      cvss_score: {type: "float", required: false, description: "CVSS Base Score"}
+      severity: {type: "string", required: false, description: "Severity level e.g. CRITICAL, HIGH"}
+      description: {type: "string", required: false, description: "Vulnerability description"}
+
+  Victim:
+    description: "Victim asset or organizational infrastructure"
+    properties:
+      id: {type: "string", required: true, description: "Unique Victim Identifier"}
+      name: {type: "string", required: true, description: "Asset or Organization Name"}
+      sector: {type: "string", required: false, description: "Industry sector"}
+      ip_address: {type: "string", required: false, description: "Primary IPv4/IPv6 address"}
+
+  Attacker:
+    description: "Threat actor or threat group profile"
+    properties:
+      id: {type: "string", required: true, description: "Attacker or Group Identifier"}
+      name: {type: "string", required: true, description: "Threat Actor / Group Name e.g. APT29"}
+      aliases: {type: "list", required: false, description: "Known aliases"}
+      country_of_origin: {type: "string", required: false, description: "Attributed country"}
+
+  Malware:
+    description: "Malware binary or payload entity"
+    properties:
+      id: {type: "string", required: true, description: "Unique Malware Identifier"}
+      sha256: {type: "string", required: true, description: "SHA256 Hash"}
+      family: {type: "string", required: false, description: "Malware family name"}
+      malware_type: {type: "string", required: false, description: "Type e.g. Ransomware, RAT, Stealer"}
+
+  APKSample:
+    description: "Android application package artifact"
+    properties:
+      id: {type: "string", required: true, description: "Unique APK Identifier"}
+      sha256: {type: "string", required: true, description: "SHA256 Hash"}
+      package_name: {type: "string", required: true, description: "Android Package Name"}
+      app_name: {type: "string", required: false, description: "Application Label"}
+      min_sdk: {type: "integer", required: false, description: "Minimum SDK version"}
+
+  Domain:
+    description: "Domain Name System record"
+    properties:
+      id: {type: "string", required: true, description: "Domain Name Identifier"}
+      name: {type: "string", required: true, description: "Fully Qualified Domain Name"}
+      registrar: {type: "string", required: false, description: "Domain registrar"}
+      created_date: {type: "string", required: false, description: "Registration timestamp"}
+
+  IPAddress:
+    description: "Internet Protocol address entity"
+    properties:
+      id: {type: "string", required: true, description: "IP Identifier"}
+      addr: {type: "string", required: true, description: "IPv4 or IPv6 Address"}
+      asn: {type: "integer", required: false, description: "Autonomous System Number"}
+      country: {type: "string", required: false, description: "Country code"}
+
+  Certificate:
+    description: "X.509 Cryptographic Certificate"
+    properties:
+      id: {type: "string", required: true, description: "Certificate SHA256 Fingerprint"}
+      fingerprint: {type: "string", required: true, description: "SHA256 Fingerprint"}
+      issuer: {type: "string", required: false, description: "Certificate Issuer DN"}
+      subject: {type: "string", required: false, description: "Certificate Subject DN"}
+      serial_number: {type: "string", required: false, description: "Serial Number"}
+
+  ATT&CKTechnique:
+    description: "MITRE ATT&CK Technique or Sub-technique"
+    properties:
+      id: {type: "string", required: true, description: "Technique ID e.g. T1059.001"}
+      name: {type: "string", required: true, description: "Technique Name"}
+      tactic: {type: "string", required: false, description: "Primary ATT&CK Tactic"}
+
+  LogEntry:
+    description: "Normalized forensic log event"
+    properties:
+      id: {type: "string", required: true, description: "Log Event ID"}
+      timestamp: {type: "string", required: true, description: "ISO8601 Event Timestamp"}
+      source: {type: "string", required: true, description: "Log Source e.g. Sysmon, Firewall"}
+      event_id: {type: "integer", required: false, description: "Source Event ID"}
+      message: {type: "string", required: false, description: "Event Log Message"}
+
+  EvidenceArtifact:
+    description: "Heterogeneous forensic artifact container"
+    properties:
+      id: {type: "string", required: true, description: "Artifact ID"}
+      artifact_type: {type: "string", required: true, description: "Artifact Type e.g. PCAP, MemoryDump, DiskImage"}
+      storage_path: {type: "string", required: true, description: "MinIO or local storage path"}
+      hash_sha256: {type: "string", required: true, description: "SHA256 Hash of raw artifact"}
+
+relationships:
+  EXPLOITS:
+    description: "Attacker or Malware exploits a Vulnerability"
+    source_types: ["Attacker", "Malware"]
+    target_types: ["CVE"]
+    properties:
+      vector: {type: "string", required: false, description: "Exploit vector e.g. Remote"}
+
+  DELIVERS:
+    description: "Attacker or Domain delivers Malware or APKSample"
+    source_types: ["Attacker", "Domain", "IPAddress"]
+    target_types: ["Malware", "APKSample"]
+    properties:
+      delivery_method: {type: "string", required: false, description: "Delivery method e.g. Phishing, Malvertising"}
+
+  COMMUNICATES_WITH:
+    description: "Malware, Victim, or APKSample communicates with Domain or IPAddress"
+    source_types: ["Malware", "Victim", "APKSample"]
+    target_types: ["Domain", "IPAddress"]
+    properties:
+      port: {type: "integer", required: false, description: "Network port"}
+      protocol: {type: "string", required: false, description: "Protocol e.g. HTTPS"}
+
+  USES_CERTIFICATE:
+    description: "Domain, Malware, APKSample, or IPAddress uses Certificate"
+    source_types: ["Domain", "Malware", "APKSample", "IPAddress"]
+    target_types: ["Certificate"]
+    properties:
+      validation_status: {type: "string", required: false, description: "Validation status"}
+
+  MAPS_TO:
+    description: "LogEntry, Malware, or APKSample maps to ATT&CKTechnique"
+    source_types: ["LogEntry", "Malware", "APKSample"]
+    target_types: ["ATT&CKTechnique"]
+    properties:
+      mapping_confidence: {type: "float", required: false, description: "Mapping confidence score"}
+
+  LINKED_CAMPAIGN:
+    description: "Attacker or Malware linked to another Attacker or Malware"
+    source_types: ["Attacker", "Malware"]
+    target_types: ["Attacker", "Malware"]
+    properties:
+      campaign_name: {type: "string", required: false, description: "Campaign Identifier"}
+
+  DOWNGRADES_TO:
+    description: "Certificate or Domain downgrades protocol version"
+    source_types: ["Certificate", "Domain"]
+    target_types: ["Certificate", "Domain"]
+    properties:
+      reason: {type: "string", required: false, description: "Downgrade reason"}
+
+  DERIVED_FROM:
+    description: "LogEntry or EvidenceArtifact derived from EvidenceArtifact"
+    source_types: ["LogEntry", "EvidenceArtifact"]
+    target_types: ["EvidenceArtifact"]
+    properties:
+      extraction_method: {type: "string", required: false, description: "Extraction method"}
+
+  PRECEDES:
+    description: "Temporal precedence between LogEntry entities"
+    source_types: ["LogEntry"]
+    target_types: ["LogEntry"]
+    properties:
+      time_delta_ms: {type: "integer", required: false, description: "Time delta in milliseconds"}
+
+  EXPECTED_TO_LEAD_TO:
+    description: "Probabilistic progression between ATT&CKTechnique steps"
+    source_types: ["ATT&CKTechnique"]
+    target_types: ["ATT&CKTechnique"]
+    properties:
+      probability: {type: "float", required: false, description: "Transition probability"}
+
+  DETECTED_BY:
+    description: "Malware, LogEntry, or APKSample detected by Detection Rule"
+    source_types: ["Malware", "LogEntry", "APKSample"]
+    target_types: ["EvidenceArtifact"]
+    properties:
+      rule_name: {type: "string", required: false, description: "Detection rule name"}
+
+  EXPORTED_AS:
+    description: "EvidenceGraph exported into report artifact"
+    source_types: ["EvidenceArtifact"]
+    target_types: ["EvidenceArtifact"]
+    properties:
+      format: {type: "string", required: false, description: "Export format e.g. STIX2"}
+
+  HAS_RESPONSE:
+    description: "Victim or LogEntry has associated incident response action"
+    source_types: ["Victim", "LogEntry"]
+    target_types: ["EvidenceArtifact"]
+    properties:
+      status: {type: "string", required: false, description: "Response status"}
+
+  RESOLVES_TO:
+    description: "Domain resolves to IPAddress"
+    source_types: ["Domain"]
+    target_types: ["IPAddress"]
+    properties:
+      resolved_at: {type: "string", required: false, description: "Resolution timestamp"}

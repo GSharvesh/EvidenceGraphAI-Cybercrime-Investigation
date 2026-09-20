@@ -1,0 +1,50 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.8, pytest-8.2.2, pluggy-1.6.0
+rootdir: D:\EvidenceGraphAI
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-0.23.7, cov-5.0.0
+asyncio: mode=Mode.AUTO
+collected 37 items
+
+tests\unit\test_api.py .....                                             [ 13%]
+tests\unit\test_config.py ...                                            [ 21%]
+tests\unit\test_graph_client.py ...........                              [ 51%]
+tests\unit\test_graph_models.py ..                                       [ 56%]
+tests\unit\test_graph_queries.py ...                                     [ 64%]
+tests\unit\test_logging.py ...                                           [ 72%]
+tests\unit\test_ontology_loader.py .....                                 [ 86%]
+tests\unit\test_ontology_validator.py .....                              [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\starlette\formparsers.py:12
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+.venv\Lib\site-packages\starlette\testclient.py:41
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\testclient.py:41: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    [], typing.ContextManager[anyio.abc.BlockingPortal]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.8-final-0 -----------
+Name                             Stmts   Miss  Cover   Missing
+--------------------------------------------------------------
+core\__init__.py                     1      0   100%
+core\config\__init__.py              2      0   100%
+core\config\settings.py             36      0   100%
+core\graph\__init__.py               3      0   100%
+core\graph\client.py               136     25    82%   51-65, 82, 107, 116-117, 133-138, 150, 157-158, 206, 215, 260, 297-301
+core\graph\exceptions.py            10      0   100%
+core\graph\models.py                93      0   100%
+core\graph\queries.py               10      0   100%
+core\logging\__init__.py             2      0   100%
+core\logging\logger.py              25      0   100%
+core\observability\__init__.py       2      0   100%
+core\observability\metrics.py        7      0   100%
+core\ontology\__init__.py            3      0   100%
+core\ontology\loader.py             26      0   100%
+core\ontology\validator.py          25      1    96%   63
+--------------------------------------------------------------
+TOTAL                              381     26    93%
+
+======================= 37 passed, 2 warnings in 8.11s ========================

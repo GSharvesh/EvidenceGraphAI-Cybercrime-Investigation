@@ -1,0 +1,19 @@
+"""Observability and Prometheus metrics instrumentation for EvidenceGraphAI."""
+
+from core.observability.metrics import (
+    GRAPH_ACTIVE_CONNECTIONS,
+    GRAPH_QUERY_COUNT,
+    GRAPH_QUERY_DURATION_SECONDS,
+    GRAPH_QUERY_ERRORS,
+    HTTP_REQUEST_COUNT,
+    HTTP_REQUEST_DURATION_SECONDS,
+)
+
+__all__ = [
+    "GRAPH_ACTIVE_CONNECTIONS",
+    "GRAPH_QUERY_COUNT",
+    "GRAPH_QUERY_DURATION_SECONDS",
+    "GRAPH_QUERY_ERRORS",
+    "HTTP_REQUEST_COUNT",
+    "HTTP_REQUEST_DURATION_SECONDS",
+]
