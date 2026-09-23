@@ -114,6 +114,28 @@ Versioned node IDs: `{original_id}::v{n}` (e.g. `CVE-2021-44228::v2`).
 
 ---
 
+## Deviation from Phase 1 Specification
+
+The original Phase 1 specification proposed an in-place mutation / soft-deletion model using `valid_from` and `valid_to` timestamps directly on existing nodes.
+
+During architectural design, we explicitly chose an **append-only** model featuring:
+1. Versioned entity identifiers (`{original_id}::v{n}`).
+2. A formal `SUPERSEDES` edge (the 15th relationship type in the ontology) linking each new version to its predecessor.
+3. Immutability of past nodes, marking superseded nodes with `valid_to = now()`.
+
+### Rationale
+- **Legal Chain of Custody & Auditability**: In criminal forensics, mutating existing records destroys non-repudiation and chain-of-custody integrity. An append-only graph guarantees an immutable audit log.
+- **Point-in-Time Traversal**: Point-in-time queries (`get_version_at(node_id, timestamp)`) can be answered with simple Cypher graph traversal along `SUPERSEDES` edges without relying on external relational logs.
+- **Forensic Lineage**: Relationships between specific entity versions (e.g. which vulnerability definition was associated with an exploit at timestamp $T$) are preserved.
+
+### Trade-offs & Mitigations
+- **Storage Growth**: Node and edge count increases linearly with edits. Mitigated by composite indexes on `valid_from`, `valid_to`, and `root_id`.
+- **Query Complexity for Current State**: Retrieving latest versions requires filtering on `valid_to IS NULL`. Mitigated by standard query helpers in `core/graph/temporal.py` and `QueryLibrary`.
+
+**Precedence**: This ADR explicitly supersedes the original soft-deletion specification from the Phase 1 prompt.
+
+---
+
 ## References
 
 - [Temporal Data Management in Neo4j (neo4j.com)](https://neo4j.com/blog/temporal-graphs/)

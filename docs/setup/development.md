@@ -14,6 +14,10 @@ Follow every step in order. Expected time: ~10 minutes.
 | Git | Any recent version | [git-scm.com](https://git-scm.com/) |
 | GNU Make (optional) | Any | Windows: `winget install GnuWin32.Make` or use script equivalents |
 
+> [!IMPORTANT]
+> **Docker Isolation Requirement:** The Docker host must run ONLY the EvidenceGraphAI containers (`evidencegraphai-neo4j`, `evidencegraphai-postgres`, `evidencegraphai-redis`, `evidencegraphai-minio`) to avoid port conflicts. If other containers are running on the same ports (7687, 7474, 5432, 6379, 9000, 9001), stop them before starting EvidenceGraphAI.
+
+
 ---
 
 ## Step-by-Step Setup

@@ -1,0 +1,28 @@
+﻿ruff.....................................................................Passed
+ruff-format..............................................................Passed
+black....................................................................Passed
+trim trailing whitespace.................................................Passed
+fix end of files.........................................................Passed
+check yaml...............................................................Passed
+check toml...............................................................Passed
+check for merge conflicts................................................Passed
+check for added large files..............................................Failed
+- hook id: check-added-large-files
+- exit code: 1
+
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+[WinError 4551] An Application Control policy has blocked this file
+
+detect private key.......................................................Passed
+don't commit to branch...................................................Passed
+Validate GitHub Workflows................................................Passed

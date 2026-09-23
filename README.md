@@ -4,11 +4,16 @@
 
 ---
 
-## Current Status: Phase 0 Completed (Foundation & Setup)
+## Current Status: Phase 1 Completed (Evidence Graph Core)
 
-Phase 0 establishes the development environment, repository structure, CI/CD pipeline, architectural skeleton, machine-readable ontology, graph client library, configuration management, and observability infrastructure.
+Phase 1 establishes the production-grade **Evidence Graph Core**:
+- **Append-Only Temporal Versioning**: Versioned entity tracking (`::v{n}`) linked via `SUPERSEDES` relationships (15 ontology relationship types).
+- **Provenance & Lineage**: Source agent tracking and strict/flexible confidence validation.
+- **Query Library**: 22 parameterized Cypher graph traversal, neighborhood expansion, and point-in-time time-travel queries.
+- **Graph Integrity Engine**: 7-rule `GraphValidator` CLI detecting anomalies and orphan entities.
+- **Developer Viewer**: Interactive vis.js graph visualizer with localhost security gating at `/dev/viewer`.
 
-For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md).
+For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [Phase 1 Completion Report](docs/reports/phase1_completion_report.md).
 
 ---
 
