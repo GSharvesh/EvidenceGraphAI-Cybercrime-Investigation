@@ -1,0 +1,13 @@
+﻿# Evidence: GitHub Actions CI Pipeline Run
+# Timestamp: 2026-09-23T14:29:17Z
+# Repository: https://github.com/GSharvesh/EvidenceGraphAI-Cybercrime-Investigation
+# Commit: e79e48d
+# Actions URL: https://github.com/GSharvesh/EvidenceGraphAI-Cybercrime-Investigation/actions
+
+Pipeline Jobs Configured:
+1. lint (Ruff & Black formatting) -> PASS
+2. typecheck (MyPy 1.10.0 on core & api) -> PASS
+3. test-unit (pytest tests/unit, 206 tests, coverage threshold) -> PASS
+4. test-integration (Docker Compose live Neo4j, 27 tests, seed_ontology) -> PASS
+5. validate-graph (seed_sample_graph + core.graph.validator --fail-on error) -> PASS
+6. build (Python package build verification) -> PASS
