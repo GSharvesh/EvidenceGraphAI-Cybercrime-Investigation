@@ -8,7 +8,7 @@ EvidenceGraphAI follows **Clean Architecture** and **Domain-Driven Design (DDD)*
 
 1. **Domain Layer (`core/ontology/`, `core/graph/models.py`)**:
    - Machine-readable YAML ontology (`schema.yaml`).
-   - Pydantic models for 11 node types and 14 edge types.
+   - Pydantic models for 11 node types and 15 edge types.
    - Core temporal versioning (`valid_from`, `valid_to`, `created_at`, `updated_at`) and provenance tracking (`source_agent`, `source_artifact_id`, `confidence`).
 
 2. **Infrastructure / Persistence Layer (`core/graph/client.py`, `infra/docker/`)**:

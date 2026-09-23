@@ -1,0 +1,8 @@
+﻿# Evidence: Docker Containers Status
+# Timestamp: 2026-09-23T14:10:20Z
+
+CONTAINER ID   IMAGE                                              COMMAND                  CREATED         STATUS                    PORTS                                                                                                NAMES
+7fe8e49d040c   postgres:16                                        "docker-entrypoint.s…"   3 minutes ago   Up 23 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                                                          evidencegraphai-postgres
+a8fdd7c885f1   redis:7                                            "docker-entrypoint.s…"   3 minutes ago   Up 23 seconds (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp                                                          evidencegraphai-redis
+eaefc1d5e173   quay.io/minio/minio:RELEASE.2024-11-07T00-52-20Z   "/usr/bin/docker-ent…"   3 minutes ago   Up 23 seconds (healthy)   0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp                                      evidencegraphai-minio
+6b200ba74d11   neo4j:5.20                                         "tini -g -- /startup…"   3 minutes ago   Up 24 seconds (healthy)   0.0.0.0:7474->7474/tcp, [::]:7474->7474/tcp, 7473/tcp, 0.0.0.0:7687->7687/tcp, [::]:7687->7687/tcp   evidencegraphai-neo4j

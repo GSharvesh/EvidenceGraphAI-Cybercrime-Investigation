@@ -26,11 +26,22 @@ CONSTRAINTS = [
 ]
 
 INDEXES = [
+    # Phase 0 — Core performance indexes
     "CREATE INDEX malware_sha256_idx IF NOT EXISTS FOR (n:Malware) ON (n.sha256)",
     "CREATE INDEX apksample_sha256_idx IF NOT EXISTS FOR (n:APKSample) ON (n.sha256)",
     "CREATE INDEX domain_name_idx IF NOT EXISTS FOR (n:Domain) ON (n.name)",
     "CREATE INDEX ipaddress_addr_idx IF NOT EXISTS FOR (n:IPAddress) ON (n.addr)",
-    "CREATE INDEX logentry_timestamp_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.timestamp)",
+    # Phase 1 — Temporal query indexes
+    "CREATE INDEX logentry_valid_from_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.valid_from)",
+    "CREATE INDEX artifact_valid_from_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.valid_from)",
+    "CREATE INDEX logentry_created_at_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.created_at)",
+    # Phase 1 — Provenance query indexes
+    "CREATE INDEX logentry_source_agent_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.source_agent)",
+    "CREATE INDEX artifact_source_agent_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.source_agent)",
+    "CREATE INDEX artifact_source_artifact_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.source_artifact_id)",
+    # Phase 1 — Lookup indexes
+    "CREATE LOOKUP INDEX node_label_lookup IF NOT EXISTS FOR (n) ON EACH labels(n)",
+    "CREATE LOOKUP INDEX rel_type_lookup IF NOT EXISTS FOR ()-[r]-() ON EACH type(r)",
 ]
 
 

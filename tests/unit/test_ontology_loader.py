@@ -54,12 +54,13 @@ def test_all_11_node_types_present(ontology_loader: OntologyLoader) -> None:
         assert expected_node in node_types, f"Missing node type {expected_node}"
 
 
-def test_all_14_relationship_types_present(ontology_loader: OntologyLoader) -> None:
-    """Verifies all 14 relationship types are defined in ontology."""
+def test_all_15_relationship_types_present(ontology_loader: OntologyLoader) -> None:
+    """Verifies all 15 relationship types are defined in ontology (14 Phase 0 + SUPERSEDES Phase 1)."""
     rel_types = ontology_loader.relationship_types
-    assert len(rel_types) == 14
+    assert len(rel_types) == 15
     for expected_rel in EXPECTED_RELATIONSHIPS:
         assert expected_rel in rel_types, f"Missing relationship type {expected_rel}"
+    assert "SUPERSEDES" in rel_types, "Missing SUPERSEDES (Phase 1)"
 
 
 def test_missing_schema_file_raises() -> None:

@@ -2,10 +2,9 @@ name: EvidenceGraphAI CI/CD Pipeline
 
 on:
   push:
-    branches: [ master, main, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ master, main, develop ]
-
+    branches: [ main, master, develop ]
 
 jobs:
   lint:
@@ -56,7 +55,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
       - name: Run Unit Tests
-        run: pytest tests/unit -v --cov=core --cov-report=term-missing --cov-report=xml
+        run: |
+          pytest tests/unit -v \
+            --cov=core \
+            --cov-report=term-missing \
+            --cov-report=xml \
+            --cov-fail-under=75
 
   test-integration:
     name: Docker Compose Integration Tests
@@ -79,10 +83,46 @@ jobs:
           until [ "$(docker inspect --format='{{.State.Health.Status}}' evidencegraphai-neo4j 2>/dev/null)" == "healthy" ]; do
             sleep 3
           done
-      - name: Seed Neo4j Ontology
+      - name: Seed Neo4j Ontology (Phase 0 + Phase 1 Indexes)
         run: python infra/scripts/seed_ontology.py
       - name: Run Integration Tests
-        run: pytest tests/integration -v
+        run: |
+          pytest tests/unit tests/integration -v \
+            --cov=core \
+            --cov-report=term-missing \
+            --cov-fail-under=85
+      - name: Tear Down Docker Compose
+        if: always()
+        run: docker compose -f infra/docker/docker-compose.yml down -v
+
+  validate-graph:
+    name: Graph Schema Validation
+    runs-on: ubuntu-latest
+    needs: [test-integration]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Start Services with Docker Compose
+        run: docker compose -f infra/docker/docker-compose.yml up -d
+      - name: Wait for Neo4j Health
+        run: |
+          echo "Waiting for Neo4j..."
+          until [ "$(docker inspect --format='{{.State.Health.Status}}' evidencegraphai-neo4j 2>/dev/null)" == "healthy" ]; do
+            sleep 3
+          done
+      - name: Seed Neo4j Ontology
+        run: python infra/scripts/seed_ontology.py
+      - name: Seed Sample Graph
+        run: python scripts/seed_sample_graph.py
+      - name: Validate Graph (fail on error violations)
+        run: python -m core.graph.validator --fail-on error --json
       - name: Tear Down Docker Compose
         if: always()
         run: docker compose -f infra/docker/docker-compose.yml down -v

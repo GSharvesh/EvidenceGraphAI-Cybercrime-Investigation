@@ -1,0 +1,27 @@
+# Evidence: Neo4j Indexes
+# Timestamp: 2026-09-23T14:11:29.912956+00:00
+
+- Name: apksample_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['APKSample'], Properties: ['id']
+- Name: apksample_sha256_idx, Type: RANGE, State: ONLINE, Labels/Types: ['APKSample'], Properties: ['sha256']
+- Name: artifact_source_agent_idx, Type: RANGE, State: ONLINE, Labels/Types: ['EvidenceArtifact'], Properties: ['source_agent']
+- Name: artifact_source_artifact_idx, Type: RANGE, State: ONLINE, Labels/Types: ['EvidenceArtifact'], Properties: ['source_artifact_id']
+- Name: artifact_valid_from_idx, Type: RANGE, State: ONLINE, Labels/Types: ['EvidenceArtifact'], Properties: ['valid_from']
+- Name: attacker_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['Attacker'], Properties: ['id']
+- Name: attacktechnique_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['ATT&CKTechnique'], Properties: ['id']
+- Name: certificate_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['Certificate'], Properties: ['id']
+- Name: cve_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['CVE'], Properties: ['id']
+- Name: domain_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['Domain'], Properties: ['id']
+- Name: domain_name_idx, Type: RANGE, State: ONLINE, Labels/Types: ['Domain'], Properties: ['name']
+- Name: evidenceartifact_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['EvidenceArtifact'], Properties: ['id']
+- Name: index_343aff4e, Type: LOOKUP, State: ONLINE, Labels/Types: None, Properties: None
+- Name: index_f7700477, Type: LOOKUP, State: ONLINE, Labels/Types: None, Properties: None
+- Name: ipaddress_addr_idx, Type: RANGE, State: ONLINE, Labels/Types: ['IPAddress'], Properties: ['addr']
+- Name: ipaddress_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['IPAddress'], Properties: ['id']
+- Name: logentry_created_at_idx, Type: RANGE, State: ONLINE, Labels/Types: ['LogEntry'], Properties: ['created_at']
+- Name: logentry_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['LogEntry'], Properties: ['id']
+- Name: logentry_source_agent_idx, Type: RANGE, State: ONLINE, Labels/Types: ['LogEntry'], Properties: ['source_agent']
+- Name: logentry_timestamp_idx, Type: RANGE, State: ONLINE, Labels/Types: ['LogEntry'], Properties: ['timestamp']
+- Name: logentry_valid_from_idx, Type: RANGE, State: ONLINE, Labels/Types: ['LogEntry'], Properties: ['valid_from']
+- Name: malware_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['Malware'], Properties: ['id']
+- Name: malware_sha256_idx, Type: RANGE, State: ONLINE, Labels/Types: ['Malware'], Properties: ['sha256']
+- Name: victim_id_unique, Type: RANGE, State: ONLINE, Labels/Types: ['Victim'], Properties: ['id']

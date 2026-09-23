@@ -1,0 +1,90 @@
+﻿# Evidence: Phase 1 Code Structure and Changed Files
+# Timestamp: 2026-09-23T14:26:29Z
+
+=== Git Status ===
+ M .env.example
+ M .github/workflows/ci.yml
+ M api/main.py
+ M core/config/settings.py
+ M core/graph/client.py
+ M core/graph/exceptions.py
+ M core/graph/models.py
+ M core/graph/queries.py
+ M core/ontology/schema.yaml
+ M docs/README.md
+ M docs/architecture/overview.md
+ M docs/ontology/reference.md
+ M docs/roadmap/future-requirements.md
+ M infra/scripts/seed_ontology.py
+ M tests/unit/test_graph_client.py
+ M tests/unit/test_graph_models.py
+ M tests/unit/test_graph_queries.py
+ M tests/unit/test_ontology_loader.py
+?? api/routes/dev_viewer.py
+?? api/routes/graph.py
+?? api/static/
+?? core/graph/provenance.py
+?? core/graph/temporal.py
+?? core/graph/validator.py
+?? core/ontology/diff.py
+?? core/ontology/introspection.py
+?? core/ontology/migration.py
+?? docs/architecture/decisions/0007-temporal-versioning-strategy.md
+?? docs/architecture/decisions/0008-provenance-enforcement.md
+?? docs/architecture/decisions/0009-developer-viewer-approach.md
+?? docs/evidence/phase1/
+?? docs/graph/
+?? docs/ontology/management.md
+?? docs/reports/phase1_completion_report.md
+?? infra/docker/neo4j/init_phase1.cypher
+?? scripts/seed_sample_graph.py
+?? tests/integration/conftest.py
+?? tests/integration/test_queries_integration.py
+?? tests/integration/test_temporal_integration.py
+?? tests/integration/test_validator_integration.py
+?? tests/unit/test_diff.py
+?? tests/unit/test_graph_routes.py
+?? tests/unit/test_introspection.py
+?? tests/unit/test_migration.py
+?? tests/unit/test_provenance.py
+?? tests/unit/test_temporal.py
+?? tests/unit/test_validator.py
+
+=== Git Diff Stat vs HEAD ===
+warning: in the working copy of '.env.example', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.github/workflows/ci.yml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'api/main.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/config/settings.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/graph/client.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/graph/exceptions.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/graph/models.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/graph/queries.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'core/ontology/schema.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/architecture/overview.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/ontology/reference.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/roadmap/future-requirements.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'infra/scripts/seed_ontology.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/test_graph_client.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/test_graph_models.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/test_graph_queries.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/test_ontology_loader.py', LF will be replaced by CRLF the next time Git touches it
+ .env.example                        |  18 +
+ .github/workflows/ci.yml            |  41 +-
+ api/main.py                         |   4 +
+ core/config/settings.py             |  26 ++
+ core/graph/client.py                | 474 +++++++++++++++++++-
+ core/graph/exceptions.py            |  18 +
+ core/graph/models.py                |   6 +-
+ core/graph/queries.py               | 841 ++++++++++++++++++++++++++++++++++--
+ core/ontology/schema.yaml           |   9 +-
+ docs/README.md                      |   2 +-
+ docs/architecture/overview.md       |   2 +-
+ docs/ontology/reference.md          |  27 +-
+ docs/roadmap/future-requirements.md |  99 ++++-
+ infra/scripts/seed_ontology.py      |  13 +-
+ tests/unit/test_graph_client.py     |   2 +-
+ tests/unit/test_graph_models.py     |   8 +-
+ tests/unit/test_graph_queries.py    | 429 +++++++++++++++++-
+ tests/unit/test_ontology_loader.py  |   7 +-
+ 18 files changed, 1917 insertions(+), 109 deletions(-)

@@ -1,0 +1,49 @@
+﻿# Evidence: Sample Graph Seeder Idempotency Verification
+# Timestamp: 2026-09-23T14:20:03Z
+
+--- Run 1 ---
+2026-09-23T14:20:04.299925Z [info     ] Connected to Neo4j database    [core.graph.client] correlation_id=None database=neo4j uri=bolt://localhost:7687
+2026-09-23T14:20:04.300922Z [info     ] Starting sample graph seed     [seed_sample_graph] correlation_id=None edge_count=18 node_count=17
+2026-09-23T14:20:04.340060Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=CVE-2021-44228 node_type=CVE
+2026-09-23T14:20:04.354054Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=attacker-apt-log4shell node_type=Attacker
+2026-09-23T14:20:04.363004Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=victim-acme-corp node_type=Victim
+2026-09-23T14:20:04.372689Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=malware-mirai-log4shell node_type=Malware
+2026-09-23T14:20:04.402046Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=ip-attacker-c2-1 node_type=IPAddress
+2026-09-23T14:20:04.410052Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=ip-attacker-c2-2 node_type=IPAddress
+2026-09-23T14:20:04.436898Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=domain-c2-log4shell-1 node_type=Domain
+2026-09-23T14:20:04.443878Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=domain-c2-log4shell-2 node_type=Domain
+2026-09-23T14:20:04.468689Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=cert-c2-log4shell-1 node_type=Certificate
+2026-09-23T14:20:04.475966Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=cert-c2-log4shell-2 node_type=Certificate
+2026-09-23T14:20:04.527990Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=T1190 node_type=ATT&CKTechnique
+2026-09-23T14:20:04.535923Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=T1059.001 node_type=ATT&CKTechnique
+2026-09-23T14:20:04.543914Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=T1041 node_type=ATT&CKTechnique
+2026-09-23T14:20:04.569084Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=log-initial-exploit-attempt node_type=LogEntry
+2026-09-23T14:20:04.576085Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=log-c2-connection node_type=LogEntry
+2026-09-23T14:20:04.582867Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=log-payload-download node_type=LogEntry
+2026-09-23T14:20:04.614411Z [info     ] Created node                   [seed_sample_graph] correlation_id=None node_id=artifact-pcap-log4shell-incident node_type=EvidenceArtifact
+2026-09-23T14:20:04.681814Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=EXPLOITS from_id=attacker-apt-log4shell to_id=CVE-2021-44228
+2026-09-23T14:20:04.689618Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=DELIVERS from_id=attacker-apt-log4shell to_id=malware-mirai-log4shell
+2026-09-23T14:20:04.789108Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=COMMUNICATES_WITH from_id=malware-mirai-log4shell to_id=ip-attacker-c2-1
+2026-09-23T14:20:04.803430Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=COMMUNICATES_WITH from_id=malware-mirai-log4shell to_id=ip-attacker-c2-2
+2026-09-23T14:20:04.812525Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=COMMUNICATES_WITH from_id=victim-acme-corp to_id=ip-attacker-c2-1
+2026-09-23T14:20:04.863101Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=RESOLVES_TO from_id=domain-c2-log4shell-1 to_id=ip-attacker-c2-1
+2026-09-23T14:20:04.871601Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=RESOLVES_TO from_id=domain-c2-log4shell-2 to_id=ip-attacker-c2-2
+2026-09-23T14:20:04.919451Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=USES_CERTIFICATE from_id=domain-c2-log4shell-1 to_id=cert-c2-log4shell-1
+2026-09-23T14:20:04.925616Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=USES_CERTIFICATE from_id=domain-c2-log4shell-2 to_id=cert-c2-log4shell-2
+2026-09-23T14:20:05.003964Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=MAPS_TO from_id=log-initial-exploit-attempt to_id=T1190
+2026-09-23T14:20:05.011581Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=MAPS_TO from_id=log-c2-connection to_id=T1041
+2026-09-23T14:20:05.019948Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=MAPS_TO from_id=log-payload-download to_id=T1059.001
+2026-09-23T14:20:05.057985Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=PRECEDES from_id=log-initial-exploit-attempt to_id=log-c2-connection
+2026-09-23T14:20:05.063980Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=PRECEDES from_id=log-c2-connection to_id=log-payload-download
+2026-09-23T14:20:05.145109Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=EXPECTED_TO_LEAD_TO from_id=T1190 to_id=T1059.001
+2026-09-23T14:20:05.153616Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=EXPECTED_TO_LEAD_TO from_id=T1059.001 to_id=T1041
+2026-09-23T14:20:05.197216Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=DERIVED_FROM from_id=log-initial-exploit-attempt to_id=artifact-pcap-log4shell-incident
+2026-09-23T14:20:05.244220Z [info     ] Created edge                   [seed_sample_graph] correlation_id=None edge_type=HAS_RESPONSE from_id=victim-acme-corp to_id=artifact-pcap-log4shell-incident
+2026-09-23T14:20:05.244220Z [info     ] Sample graph seed complete     [seed_sample_graph] correlation_id=None
+2026-09-23T14:20:05.244220Z [info     ] Closed Neo4j database connection pool [core.graph.client] correlation_id=None
+
+--- Run 2 (Idempotency Check) ---
+2026-09-23T14:20:05.734783Z [info     ] Connected to Neo4j database    [core.graph.client] correlation_id=None database=neo4j uri=bolt://localhost:7687
+2026-09-23T14:20:05.734783Z [info     ] Starting sample graph seed     [seed_sample_graph] correlation_id=None edge_count=18 node_count=17
+2026-09-23T14:20:05.841703Z [info     ] Sample graph seed complete     [seed_sample_graph] correlation_id=None
+2026-09-23T14:20:05.842729Z [info     ] Closed Neo4j database connection pool [core.graph.client] correlation_id=None

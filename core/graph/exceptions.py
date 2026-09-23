@@ -29,3 +29,21 @@ class GraphValidationError(GraphError):
     """Raised when node or edge properties fail schema validation."""
 
     pass
+
+
+class TemporalValidationError(GraphError):
+    """Raised when temporal field values are invalid (e.g., valid_to before valid_from)."""
+
+    pass
+
+
+class TemporalQueryError(GraphError):
+    """Raised when a point-in-time or temporal range query fails."""
+
+    pass
+
+
+class ProvenanceValidationError(GraphError):
+    """Raised when provenance fields are missing, invalid, or fail allowlist check."""
+
+    pass

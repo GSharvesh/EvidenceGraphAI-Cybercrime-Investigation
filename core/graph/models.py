@@ -122,7 +122,7 @@ class EvidenceArtifactNode(BaseNodeModel):
     hash_sha256: str
 
 
-# --- Edge Type Models (14 Relationship Types) ---
+# --- Edge Type Models (15 Relationship Types) ---
 
 
 class ExploitsEdge(BaseEdgeModel):
@@ -180,3 +180,7 @@ class HasResponseEdge(BaseEdgeModel):
 
 class ResolvesToEdge(BaseEdgeModel):
     resolved_at: str | None = None
+
+
+class SupersedesEdge(BaseEdgeModel):
+    superseded_at: str | None = None

@@ -24,7 +24,7 @@ This document defines the machine-readable graph schema specified in `core/ontol
 
 ---
 
-## Relationship Types (14 Total)
+## Relationship Types (15 Total — Phase 1 adds SUPERSEDES)
 
 | Edge Label | Description | Allowed Sources | Allowed Targets | Key Properties |
 |------------|-------------|-----------------|-----------------|----------------|
@@ -42,10 +42,13 @@ This document defines the machine-readable graph schema specified in `core/ontol
 | **EXPORTED_AS** | Graph export format | `EvidenceArtifact` | `EvidenceArtifact` | `format` |
 | **HAS_RESPONSE** | Response action link | `Victim`, `LogEntry` | `EvidenceArtifact` | `status` |
 | **RESOLVES_TO** | DNS IP Resolution | `Domain` | `IPAddress` | `resolved_at` |
+| **SUPERSEDES** ⭐ Phase 1 | Append-only version chain | All 11 node types | All 11 node types | `superseded_at` |
 
 ---
 
 ## Database Constraints & Index Statements
+
+### Phase 0 — Uniqueness Constraints and Core Indexes
 
 ```cypher
 // Uniqueness Constraints
@@ -61,10 +64,30 @@ CREATE CONSTRAINT attacktechnique_id_unique IF NOT EXISTS FOR (n:`ATT&CKTechniqu
 CREATE CONSTRAINT logentry_id_unique IF NOT EXISTS FOR (n:LogEntry) REQUIRE n.id IS UNIQUE;
 CREATE CONSTRAINT evidenceartifact_id_unique IF NOT EXISTS FOR (n:EvidenceArtifact) REQUIRE n.id IS UNIQUE;
 
-// Performance Indexes
+// Core Performance Indexes
 CREATE INDEX malware_sha256_idx IF NOT EXISTS FOR (n:Malware) ON (n.sha256);
 CREATE INDEX apksample_sha256_idx IF NOT EXISTS FOR (n:APKSample) ON (n.sha256);
 CREATE INDEX domain_name_idx IF NOT EXISTS FOR (n:Domain) ON (n.name);
 CREATE INDEX ipaddress_addr_idx IF NOT EXISTS FOR (n:IPAddress) ON (n.addr);
 CREATE INDEX logentry_timestamp_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.timestamp);
+```
+
+### Phase 1 — Temporal & Provenance Indexes
+
+Applied by `infra/docker/neo4j/init_phase1.cypher`:
+
+```cypher
+// Temporal query indexes (enable point-in-time queries)
+CREATE INDEX logentry_valid_from_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.valid_from);
+CREATE INDEX artifact_valid_from_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.valid_from);
+CREATE INDEX logentry_created_at_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.created_at);
+
+// Provenance query indexes (enable agent and artifact lookups)
+CREATE INDEX logentry_source_agent_idx IF NOT EXISTS FOR (n:LogEntry) ON (n.source_agent);
+CREATE INDEX artifact_source_agent_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.source_agent);
+CREATE INDEX artifact_source_artifact_idx IF NOT EXISTS FOR (n:EvidenceArtifact) ON (n.source_artifact_id);
+
+// Lookup indexes
+CREATE LOOKUP INDEX node_label_lookup IF NOT EXISTS FOR (n) ON EACH labels(n);
+CREATE LOOKUP INDEX rel_type_lookup IF NOT EXISTS FOR ()-[r]-() ON EACH type(r);
 ```

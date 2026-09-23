@@ -1,6 +1,6 @@
 version: "1.0.0"
 title: "EvidenceGraphAI Ontology Definition Schema"
-description: "Formal machine-readable ontology defining 11 node types and 14 relationship types for cybercrime evidence graphs."
+description: "Formal machine-readable ontology defining 11 node types and 15 relationship types for cybercrime evidence graphs."
 
 nodes:
   CVE:
@@ -192,3 +192,10 @@ relationships:
     target_types: ["IPAddress"]
     properties:
       resolved_at: {type: "string", required: false, description: "Resolution timestamp"}
+
+  SUPERSEDES:
+    description: "New node version supersedes the previous version (append-only versioning)"
+    source_types: ["CVE", "Victim", "Attacker", "Malware", "APKSample", "Domain", "IPAddress", "Certificate", "ATT&CKTechnique", "LogEntry", "EvidenceArtifact"]
+    target_types: ["CVE", "Victim", "Attacker", "Malware", "APKSample", "Domain", "IPAddress", "Certificate", "ATT&CKTechnique", "LogEntry", "EvidenceArtifact"]
+    properties:
+      superseded_at: {type: "string", required: false, description: "Timestamp of the supersession"}

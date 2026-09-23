@@ -9,6 +9,8 @@ from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from api.routes.dev_viewer import router as dev_viewer_router
+from api.routes.graph import router as graph_router
 from api.routes.health import router as health_router
 from api.routes.metrics import router as metrics_router
 from core.config.settings import get_settings
@@ -90,6 +92,8 @@ async def correlation_id_and_logging_middleware(
 
 app.include_router(health_router)
 app.include_router(metrics_router)
+app.include_router(graph_router)
+app.include_router(dev_viewer_router)
 
 
 @app.get("/", summary="Root application metadata")

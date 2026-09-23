@@ -74,6 +74,32 @@ class Settings(BaseSettings):
         default="http://localhost:3000", description="Comma-separated CORS origins"
     )
 
+    # Provenance Configuration (Phase 1)
+    provenance_strict_mode: bool = Field(
+        default=False,
+        description="If true, source_agent must be in KNOWN_AGENTS list",
+    )
+    known_agents: str = Field(
+        default="system,manual",
+        description="Comma-separated allowlist of known agent names (used in strict mode)",
+    )
+
+    # Developer Viewer Configuration (Phase 1)
+    dev_viewer_enabled: bool = Field(
+        default=True,
+        description="Enable the developer graph viewer and /graph/export endpoints",
+    )
+    dev_viewer_allow_remote: bool = Field(
+        default=False,
+        description="If false, restrict viewer/export/validate endpoints to localhost only",
+    )
+
+    # Test Database Configuration (Phase 1)
+    neo4j_test_database: str = Field(
+        default="neo4j",
+        description="Separate Neo4j database for integration tests",
+    )
+
     # Observability Configuration
     metrics_enabled: bool = Field(default=True, description="Enable Prometheus metrics")
     metrics_port: int = Field(default=8000, description="Metrics export port")

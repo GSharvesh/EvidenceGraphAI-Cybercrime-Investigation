@@ -24,6 +24,7 @@ from core.graph.models import (
     MapsToEdge,
     PrecedesEdge,
     ResolvesToEdge,
+    SupersedesEdge,
     UsesCertificateEdge,
     VictimNode,
 )
@@ -72,7 +73,7 @@ def test_node_models_instantiation() -> None:
 
 
 def test_edge_models_instantiation() -> None:
-    """Verifies all 14 relationship model classes instantiate cleanly."""
+    """Verifies all 15 relationship model classes instantiate cleanly."""
     e1 = ExploitsEdge(from_id="a1", to_id="cve1", vector="Network")
     assert e1.vector == "Network"
 
@@ -114,3 +115,8 @@ def test_edge_models_instantiation() -> None:
 
     e14 = ResolvesToEdge(from_id="d1", to_id="ip1", resolved_at="2024-01-01T00:00:00Z")
     assert e14.resolved_at == "2024-01-01T00:00:00Z"
+
+    e15 = SupersedesEdge(
+        from_id="n::v2", to_id="n::v1", superseded_at="2024-01-01T00:00:00Z"
+    )
+    assert e15.superseded_at == "2024-01-01T00:00:00Z"

@@ -1,0 +1,50 @@
+﻿# Evidence: Test Coverage (Unit + Integration)
+# Timestamp: 2026-09-23T14:16:30Z
+........................................................................ [ 30%]
+........................................................................ [ 61%]
+........................................................................ [ 92%]
+.................                                                        [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\starlette\formparsers.py:12
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+.venv\Lib\site-packages\starlette\testclient.py:41
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\testclient.py:41: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    [], typing.ContextManager[anyio.abc.BlockingPortal]
+
+.venv\Lib\site-packages\neo4j\_sync\driver.py:518
+.venv\Lib\site-packages\neo4j\_sync\driver.py:518
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\neo4j\_sync\driver.py:518: DeprecationWarning: Relying on Driver's destructor to close the session is deprecated. Please make sure to close the session. Use it as a context (`with` statement) or make sure to call `.close()` explicitly. Future versions of the driver will not close drivers automatically.
+    _deprecation_warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.8-final-0 -----------
+Name                             Stmts   Miss  Cover   Missing
+--------------------------------------------------------------
+core\__init__.py                     1      0   100%
+core\config\__init__.py              2      0   100%
+core\config\settings.py             41      0   100%
+core\graph\__init__.py               3      0   100%
+core\graph\client.py               263     46    83%   108-110, 156, 182-185, 197, 204-205, 250, 253-254, 267-268, 298, 310, 348, 443, 524, 557, 575-594, 665, 690, 705-716
+core\graph\exceptions.py            16      0   100%
+core\graph\models.py                95      0   100%
+core\graph\provenance.py            31      1    97%   93
+core\graph\queries.py              264     32    88%   99-100, 134, 159, 201, 237, 273, 331, 371-377, 388, 414-417, 440, 453, 508, 542, 595, 630-631, 675, 714, 771, 797, 826
+core\graph\temporal.py              56      0   100%
+core\graph\validator.py            222     30    86%   185-186, 252, 266, 291, 299, 322, 329-330, 355, 396-397, 439-440, 481-482, 500-522, 613, 625
+core\logging\__init__.py             2      0   100%
+core\logging\logger.py              25      0   100%
+core\observability\__init__.py       2      0   100%
+core\observability\metrics.py        7      0   100%
+core\ontology\__init__.py            3      0   100%
+core\ontology\diff.py              107      7    93%   104, 106, 108, 110, 112, 216, 221
+core\ontology\introspection.py      22      0   100%
+core\ontology\loader.py             26      0   100%
+core\ontology\migration.py          58      0   100%
+core\ontology\validator.py          25      1    96%   63
+--------------------------------------------------------------
+TOTAL                             1271    117    91%
+
+233 passed, 4 warnings in 13.55s

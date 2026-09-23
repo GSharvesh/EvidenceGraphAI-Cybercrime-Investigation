@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvidenceGraphAI — Developer Graph Viewer</title>
+  <meta name="description" content="Developer-only graph visualization tool for EvidenceGraphAI. Not for production use." />
+
+  <!-- vis.js from CDN -->
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.9/styles/vis-network.min.css" />
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3249;
+      --accent: #4f8ef7;
+      --accent2: #7c5cfc;
+      --warning: #f7b955;
+      --danger: #f75555;
+      --success: #55c9a0;
+      --text: #e2e4f0;
+      --text-muted: #7e84a3;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Security banner ─────────────────────────────── */
+    #security-banner {
+      background: #3a2000;
+      border-bottom: 2px solid var(--warning);
+      color: var(--warning);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    #security-banner span.icon { font-size: 18px; }
+
+    /* ── Header ──────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { font-size: 15px; font-weight: 700; }
+    .logo-sub { font-size: 11px; color: var(--text-muted); }
+    #stats-bar {
+      display: flex; gap: 20px; font-size: 12px; color: var(--text-muted);
+    }
+    .stat-item strong { color: var(--accent); }
+    #refresh-btn {
+      background: var(--accent);
+      border: none; border-radius: 6px;
+      color: #fff; padding: 6px 14px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: opacity .15s;
+    }
+    #refresh-btn:hover { opacity: .85; }
+    #refresh-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Main layout ─────────────────────────────────── */
+    #main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Left panel ──────────────────────────────────── */
+    #left-panel {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .panel-section {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-section h3 {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-muted); margin-bottom: 10px;
+    }
+    #filter-scroll { overflow-y: auto; flex: 1; padding: 0 0 8px 0; }
+
+    .filter-group-title {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--text-muted); padding: 8px 14px 4px;
+    }
+
+    .filter-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 14px; cursor: pointer;
+      border-radius: 4px; transition: background .1s;
+    }
+    .filter-item:hover { background: var(--surface2); }
+    .filter-item input[type=checkbox] { accent-color: var(--accent); }
+    .filter-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .filter-label { font-size: 12px; flex: 1; }
+    .filter-count {
+      font-size: 10px; color: var(--text-muted);
+      background: var(--surface2); border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    #search-box {
+      width: 100%; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 6px 10px; font-size: 13px;
+    }
+    #search-box:focus { outline: none; border-color: var(--accent); }
+
+    /* ── Graph canvas ────────────────────────────────── */
+    #graph-container {
+      flex: 1;
+      position: relative;
+      background: var(--bg);
+    }
+    #graph { width: 100%; height: 100%; }
+
+    /* ── Loading overlay ─────────────────────────────── */
+    #loading {
+      position: absolute; inset: 0;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; z-index: 10;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-text { color: var(--text-muted); font-size: 13px; }
+
+    /* ── Error overlay ───────────────────────────────── */
+    #error-overlay {
+      display: none;
+      position: absolute; inset: 0;
+      background: var(--bg);
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; z-index: 10;
+    }
+    #error-overlay.visible { display: flex; }
+    #error-msg { color: var(--danger); font-size: 14px; text-align: center; max-width: 400px; }
+
+    /* ── Right panel (properties) ────────────────────── */
+    #right-panel {
+      width: 280px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow: hidden; flex-shrink: 0;
+      transition: width .2s;
+    }
+    #right-panel.collapsed { width: 0; }
+    #props-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    #props-header h3 { font-size: 13px; font-weight: 700; }
+    #close-props {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 18px; line-height: 1;
+    }
+    #close-props:hover { color: var(--text); }
+    #props-type-badge {
+      margin: 10px 14px 6px;
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 4px;
+      background: var(--accent2); color: #fff;
+    }
+    #props-body { overflow-y: auto; flex: 1; padding: 0 14px 14px; }
+    .prop-row {
+      display: flex; flex-direction: column;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .prop-key {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text-muted); margin-bottom: 3px;
+    }
+    .prop-val {
+      font-family: var(--mono); font-size: 12px;
+      word-break: break-all; color: var(--text);
+    }
+    .prop-val.null { color: var(--text-muted); font-style: italic; }
+    #empty-selection {
+      padding: 24px 14px; color: var(--text-muted); font-size: 13px;
+      text-align: center;
+    }
+
+    /* ── Bottom status bar ───────────────────────────── */
+    #status-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5px 16px;
+      font-size: 11px; color: var(--text-muted);
+      display: flex; gap: 20px; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Security Banner -->
+<div id="security-banner">
+  <span class="icon">⚠️</span>
+  <span>Developer tool — not for production use. No authentication. Restricted to localhost by default. See <code>docs/roadmap/future-requirements.md</code>.</span>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🕸️</div>
+    <div>
+      <div class="logo-text">EvidenceGraphAI</div>
+      <div class="logo-sub">Developer Graph Viewer — Phase 1</div>
+    </div>
+  </div>
+  <div id="stats-bar">
+    <div class="stat-item">Nodes: <strong id="stat-nodes">—</strong></div>
+    <div class="stat-item">Edges: <strong id="stat-edges">—</strong></div>
+    <div class="stat-item">Visible: <strong id="stat-visible">—</strong></div>
+  </div>
+  <button id="refresh-btn" onclick="loadGraph()">⟳ Refresh</button>
+</header>
+
+<!-- Main -->
+<div id="main">
+
+  <!-- Left: Filters -->
+  <div id="left-panel">
+    <div class="panel-section">
+      <h3>Search</h3>
+      <input type="text" id="search-box" placeholder="Search node ID or property…" oninput="applyFilters()" />
+    </div>
+    <div id="filter-scroll">
+      <div class="filter-group-title">Node Types</div>
+      <div id="node-type-filters"></div>
+      <div class="filter-group-title" style="margin-top:8px;">Edge Types</div>
+      <div id="edge-type-filters"></div>
+    </div>
+  </div>
+
+  <!-- Centre: Graph -->
+  <div id="graph-container">
+    <div id="loading">
+      <div class="spinner"></div>
+      <div id="loading-text">Connecting to graph…</div>
+    </div>
+    <div id="error-overlay">
+      <span style="font-size:32px">⚠️</span>
+      <div id="error-msg">Could not load graph data.</div>
+      <button id="refresh-btn2" onclick="loadGraph()" style="background:var(--accent);border:none;border-radius:6px;color:#fff;padding:7px 16px;cursor:pointer;font-size:13px;">Retry</button>
+    </div>
+    <div id="graph"></div>
+  </div>
+
+  <!-- Right: Properties -->
+  <div id="right-panel" class="collapsed">
+    <div id="props-header">
+      <h3>Properties</h3>
+      <button id="close-props" onclick="closeProps()">×</button>
+    </div>
+    <div id="props-type-badge"></div>
+    <div id="props-body">
+      <div id="empty-selection">Click a node or edge to inspect its properties.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Status bar -->
+<div id="status-bar">
+  <span id="status-msg">Ready. Click a node or edge to inspect.</span>
+  <span id="status-time"></span>
+</div>
+
+<script>
+// ── Palette ────────────────────────────────────────────────────────────────
+const NODE_COLORS = {
+  CVE:               '#f75555',
+  Victim:            '#f7b955',
+  Attacker:          '#fc6b8a',
+  Malware:           '#a855f7',
+  APKSample:         '#ec4899',
+  Domain:            '#3b82f6',
+  IPAddress:         '#06b6d4',
+  Certificate:       '#10b981',
+  'ATT&CKTechnique': '#f97316',
+  LogEntry:          '#84cc16',
+  EvidenceArtifact:  '#6366f1',
+  _default:          '#7e84a3',
+};
+
+const EDGE_COLORS = {
+  EXPLOITS:            '#f75555',
+  DELIVERS:            '#f7b955',
+  COMMUNICATES_WITH:   '#3b82f6',
+  USES_CERTIFICATE:    '#10b981',
+  MAPS_TO:             '#f97316',
+  LINKED_CAMPAIGN:     '#a855f7',
+  DOWNGRADES_TO:       '#ec4899',
+  DERIVED_FROM:        '#6366f1',
+  PRECEDES:            '#84cc16',
+  EXPECTED_TO_LEAD_TO: '#06b6d4',
+  DETECTED_BY:         '#fc6b8a',
+  EXPORTED_AS:         '#e2e4f0',
+  HAS_RESPONSE:        '#fbbf24',
+  RESOLVES_TO:         '#34d399',
+  SUPERSEDES:          '#94a3b8',
+  _default:            '#7e84a3',
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let _allNodes = [];
+let _allEdges = [];
+let _network = null;
+let _visNodes = null;
+let _visEdges = null;
+let _activeNodeTypes = new Set();
+let _activeEdgeTypes = new Set();
+
+// ── Main load ──────────────────────────────────────────────────────────────
+async function loadGraph() {
+  showLoading('Loading graph data…');
+  hideError();
+  document.getElementById('refresh-btn').disabled = true;
+
+  try {
+    const t0 = performance.now();
+    const resp = await fetch('/graph/export?limit=2000');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+    const data = await resp.json();
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+
+    _allNodes = data.nodes || [];
+    _allEdges = data.edges || [];
+
+    buildFilters();
+    renderGraph();
+    updateStatBar(_allNodes.length, _allEdges.length);
+    setStatus(`Loaded ${_allNodes.length} nodes, ${_allEdges.length} edges in ${elapsed}s`);
+    setStatusTime();
+  } catch (err) {
+    showError(`Failed to load graph: ${err.message}`);
+  } finally {
+    hideLoading();
+    document.getElementById('refresh-btn').disabled = false;
+  }
+}
+
+// ── Build filter panels ────────────────────────────────────────────────────
+function buildFilters() {
+  const nodeTypes = [...new Set(_allNodes.flatMap(n => n._labels || []))].sort();
+  const edgeTypes = [...new Set(_allEdges.map(e => e.type))].filter(Boolean).sort();
+
+  _activeNodeTypes = new Set(nodeTypes);
+  _activeEdgeTypes = new Set(edgeTypes);
+
+  // Count per type
+  const nodeCounts = {};
+  _allNodes.forEach(n => (n._labels || []).forEach(l => { nodeCounts[l] = (nodeCounts[l] || 0) + 1; }));
+  const edgeCounts = {};
+  _allEdges.forEach(e => { edgeCounts[e.type] = (edgeCounts[e.type] || 0) + 1; });
+
+  renderFilterGroup('node-type-filters', nodeTypes, nodeCounts, NODE_COLORS, 'node');
+  renderFilterGroup('edge-type-filters', edgeTypes, edgeCounts, EDGE_COLORS, 'edge');
+}
+
+function renderFilterGroup(containerId, types, counts, palette, kind) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  types.forEach(t => {
+    const color = palette[t] || palette._default;
+    const div = document.createElement('div');
+    div.className = 'filter-item';
+    div.innerHTML = `
+      <input type="checkbox" id="filter-${kind}-${t}" checked
+             onchange="toggleFilter('${kind}','${t}',this.checked)" />
+      <div class="filter-dot" style="background:${color}"></div>
+      <label class="filter-label" for="filter-${kind}-${t}">${t}</label>
+      <span class="filter-count">${counts[t] || 0}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleFilter(kind, type, checked) {
+  if (kind === 'node') checked ? _activeNodeTypes.add(type) : _activeNodeTypes.delete(type);
+  else                 checked ? _activeEdgeTypes.add(type) : _activeEdgeTypes.delete(type);
+  applyFilters();
+}
+
+// ── Render vis-network ─────────────────────────────────────────────────────
+function renderGraph() {
+  const search = document.getElementById('search-box').value.toLowerCase();
+
+  const filteredNodes = _allNodes.filter(n => {
+    const labels = n._labels || [];
+    if (!labels.some(l => _activeNodeTypes.has(l))) return false;
+    if (search) {
+      const haystack = JSON.stringify(n).toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+  const visibleIds = new Set(filteredNodes.map(n => n.id));
+
+  const filteredEdges = _allEdges.filter(e =>
+    _activeEdgeTypes.has(e.type) &&
+    visibleIds.has(e.from_id) &&
+    visibleIds.has(e.to_id)
+  );
+
+  const visNodeData = filteredNodes.map(n => {
+    const label = (n._labels || [])[0] || '_default';
+    const color = NODE_COLORS[label] || NODE_COLORS._default;
+    return {
+      id: n.id,
+      label: `${label}\n${(n.id || '').substring(0, 20)}`,
+      title: label,
+      color: { background: color, border: darken(color), highlight: { background: lighten(color), border: color } },
+      font: { color: '#e2e4f0', size: 11 },
+      shape: shapeForLabel(label),
+      _raw: n,
+    };
+  });
+
+  const visEdgeData = filteredEdges.map(e => ({
+    id: e.id || `${e.from_id}-${e.type}-${e.to_id}`,
+    from: e.from_id,
+    to: e.to_id,
+    label: e.type,
+    color: { color: EDGE_COLORS[e.type] || EDGE_COLORS._default, opacity: 0.75 },
+    font: { color: '#7e84a3', size: 9, align: 'middle' },
+    arrows: { to: { enabled: true, scaleFactor: 0.6 } },
+    smooth: { type: 'dynamic' },
+    _raw: e,
+  }));
+
+  document.getElementById('stat-visible').textContent =
+    `${filteredNodes.length} / ${filteredEdges.length}`;
+
+  if (_network) {
+    _visNodes.clear(); _visNodes.add(visNodeData);
+    _visEdges.clear(); _visEdges.add(visEdgeData);
+    return;
+  }
+
+  _visNodes = new vis.DataSet(visNodeData);
+  _visEdges = new vis.DataSet(visEdgeData);
+
+  const container = document.getElementById('graph');
+  _network = new vis.Network(container, { nodes: _visNodes, edges: _visEdges }, {
+    physics: {
+      enabled: true,
+      barnesHut: { gravitationalConstant: -8000, centralGravity: 0.3, springLength: 120 },
+    },
+    interaction: { hover: true, tooltipDelay: 200 },
+    layout: { improvedLayout: true },
+  });
+
+  _network.on('click', params => {
+    if (params.nodes.length > 0) {
+      const node = _visNodes.get(params.nodes[0]);
+      if (node) showProps(node._raw, 'node');
+    } else if (params.edges.length > 0) {
+      const edge = _visEdges.get(params.edges[0]);
+      if (edge) showProps(edge._raw, 'edge');
+    } else {
+      closeProps();
+    }
+  });
+}
+
+function applyFilters() { if (_network) renderGraph(); }
+
+// ── Property panel ─────────────────────────────────────────────────────────
+function showProps(data, kind) {
+  const panel = document.getElementById('right-panel');
+  panel.classList.remove('collapsed');
+
+  const badge = document.getElementById('props-type-badge');
+  const body = document.getElementById('props-body');
+
+  const labels = data._labels || [];
+  const label = kind === 'node' ? (labels[0] || 'Node') : (data.type || 'Edge');
+  const color = kind === 'node'
+    ? (NODE_COLORS[label] || NODE_COLORS._default)
+    : (EDGE_COLORS[label] || EDGE_COLORS._default);
+
+  badge.textContent = label;
+  badge.style.background = color;
+
+  const entries = Object.entries(data).filter(([k]) => !k.startsWith('_'));
+  body.innerHTML = entries.map(([k, v]) => `
+    <div class="prop-row">
+      <div class="prop-key">${escapeHtml(k)}</div>
+      <div class="prop-val ${v === null || v === undefined ? 'null' : ''}">${
+        v === null || v === undefined ? 'null'
+        : Array.isArray(v) ? escapeHtml(JSON.stringify(v))
+        : escapeHtml(String(v))
+      }</div>
+    </div>
+  `).join('');
+}
+
+function closeProps() {
+  document.getElementById('right-panel').classList.add('collapsed');
+}
+
+// ── UI helpers ─────────────────────────────────────────────────────────────
+function showLoading(msg) {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('loading-text').textContent = msg;
+}
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+}
+function showError(msg) {
+  const el = document.getElementById('error-overlay');
+  el.classList.add('visible');
+  document.getElementById('error-msg').textContent = msg;
+}
+function hideError() {
+  document.getElementById('error-overlay').classList.remove('visible');
+}
+function setStatus(msg) {
+  document.getElementById('status-msg').textContent = msg;
+}
+function setStatusTime() {
+  document.getElementById('status-time').textContent =
+    new Date().toLocaleTimeString();
+}
+function updateStatBar(nodes, edges) {
+  document.getElementById('stat-nodes').textContent = nodes;
+  document.getElementById('stat-edges').textContent = edges;
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function shapeForLabel(label) {
+  const shapes = {
+    CVE: 'diamond', Attacker: 'star', Victim: 'hexagon',
+    Malware: 'triangle', APKSample: 'triangleDown',
+    LogEntry: 'ellipse', EvidenceArtifact: 'database',
+  };
+  return shapes[label] || 'dot';
+}
+function darken(hex) {
+  return hex; // simplified — keep border same as fill
+}
+function lighten(hex) {
+  return hex + '99';
+}
+
+// ── Bootstrap ──────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', loadGraph);
+</script>
+</body>
+</html>

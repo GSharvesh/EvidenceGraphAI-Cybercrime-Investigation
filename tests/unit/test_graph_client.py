@@ -91,7 +91,7 @@ def test_get_node_found(mock_graph_client: GraphClient) -> None:
     ]
 
     res = mock_graph_client.get_node("cve-1")
-    assert res == {"id": "cve-1", "severity": "HIGH"}
+    assert res == {"id": "cve-1", "severity": "HIGH", "valid_to": None}
 
 
 def test_get_node_not_found(mock_graph_client: GraphClient) -> None:
