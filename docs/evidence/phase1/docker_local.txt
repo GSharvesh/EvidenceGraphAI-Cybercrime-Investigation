@@ -1,0 +1,23 @@
+# EvidenceGraphAI — Docker Local Verification
+# Date: 2026-09-24T19:34:45+05:30
+# Command: docker compose -f infra/docker/docker-compose.yml ps
+
+NAME                       IMAGE                             COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+evidencegraphai-minio      cgr.dev/chainguard/minio:latest   "/usr/bin/minio serv…"   minio      55 seconds ago   Up 52 seconds (healthy)   0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp
+evidencegraphai-neo4j      neo4j:5.20                        "tini -g -- /startup…"   neo4j      55 seconds ago   Up 52 seconds (healthy)   0.0.0.0:7474->7474/tcp, [::]:7474->7474/tcp, 0.0.0.0:7687->7687/tcp, [::]:7687->7687/tcp
+evidencegraphai-postgres   postgres:16                       "docker-entrypoint.s…"   postgres   55 seconds ago   Up 52 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+evidencegraphai-redis      redis:7                           "docker-entrypoint.s…"   redis      55 seconds ago   Up 52 seconds (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+
+# MinIO Image Change:
+#   OLD: quay.io/minio/minio:RELEASE.2024-11-07T00-52-20Z (401 Unauthorized — registry removed)
+#   NEW: cgr.dev/chainguard/minio:latest (publicly accessible, actively maintained)
+#
+# Reason: MinIO discontinued public Docker images on Docker Hub and Quay.io
+# in September 2026. Chainguard provides a secure, minimal replacement.
+#
+# Healthcheck Change:
+#   OLD: curl -f http://localhost:9000/minio/health/live || exit 1
+#   NEW: mc alias set local http://localhost:9000 ... && mc ready local || exit 1
+#   Reason: Chainguard distroless image does not include curl; mc is bundled.
+#
+# Result: ALL 4 SERVICES HEALTHY

@@ -1,4 +1,4 @@
-============================= test session starts =============================
+﻿============================= test session starts =============================
 platform win32 -- Python 3.11.8, pytest-8.2.2, pluggy-1.6.0
 rootdir: D:\EvidenceGraphAI
 configfile: pyproject.toml
@@ -69,4 +69,4 @@ core\ontology\validator.py          25      1    96%   63
 --------------------------------------------------------------
 TOTAL                             1270    116    91%
 
-======================= 233 passed, 4 warnings in 7.22s =======================
+====================== 233 passed, 4 warnings in 14.29s =======================

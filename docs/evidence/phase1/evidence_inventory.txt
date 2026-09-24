@@ -1,25 +1,25 @@
-﻿
 Name                     Length LastWriteTime
 ----                     ------ -------------
 api_endpoints.txt         19549 9/23/2026 7:58:24 PM
-black.txt                    71 9/23/2026 8:16:06 PM
+black.txt                    57 9/24/2026 7:35:34 PM
 ci_run.png               161236 9/23/2026 8:27:47 PM
 ci_run.txt                 2154 9/23/2026 8:28:48 PM
-coverage.txt               4909 9/23/2026 8:30:14 PM
+coverage.txt               4912 9/24/2026 7:48:35 PM
 dev_viewer.png           161817 9/23/2026 7:58:24 PM
 docker_isolation.txt        720 9/24/2026 6:25:45 PM
-docker_ps.txt              1358 9/23/2026 7:58:24 PM
+docker_local.txt           1743 9/24/2026 7:35:01 PM
+docker_ps.txt              1269 9/24/2026 7:48:50 PM
 edge_type_audit.txt        3429 9/24/2026 6:24:42 PM
-evidence_inventory.txt        0 9/24/2026 6:25:57 PM
+evidence_inventory.txt     1464 9/24/2026 7:49:11 PM
 mypy.txt                    121 9/23/2026 7:58:24 PM
 neo4j_indexes.txt          2710 9/23/2026 7:58:24 PM
 phase_boundary.txt          719 9/24/2026 6:25:17 PM
 precommit_all.txt          1859 9/23/2026 8:15:02 PM
 precommit_all_verify.txt   1406 9/24/2026 6:24:53 PM
 push_verification.txt      2601 9/24/2026 6:24:57 PM
-pytest_integration.txt     4080 9/23/2026 7:58:24 PM
-pytest_unit.txt            4339 9/23/2026 7:58:24 PM
-ruff.txt                     19 9/23/2026 8:16:12 PM
+pytest_integration.txt     3986 9/24/2026 7:48:13 PM
+pytest_unit.txt            4191 9/24/2026 7:47:57 PM
+ruff.txt                     23 9/24/2026 7:35:15 PM
 secrets.txt                  46 9/23/2026 8:15:41 PM
 seed_sample.txt            7271 9/23/2026 7:58:24 PM
 structure.txt              4841 9/23/2026 7:58:24 PM

@@ -1,26 +1,24 @@
-﻿# Evidence: Unit Tests
-# Timestamp: 2026-09-23T14:14:29Z
-============================= test session starts =============================
+﻿============================= test session starts =============================
 platform win32 -- Python 3.11.8, pytest-8.2.2, pluggy-1.6.0
 rootdir: D:\EvidenceGraphAI
 configfile: pyproject.toml
 plugins: anyio-4.15.1, asyncio-0.23.7, cov-5.0.0
 asyncio: mode=Mode.AUTO
-collected 204 items
+collected 206 items
 
 tests\unit\test_api.py .....                                             [  2%]
 tests\unit\test_config.py ...                                            [  3%]
 tests\unit\test_diff.py ...............                                  [ 11%]
 tests\unit\test_graph_client.py ...........                              [ 16%]
 tests\unit\test_graph_models.py ..                                       [ 17%]
-tests\unit\test_graph_queries.py ................................        [ 33%]
+tests\unit\test_graph_queries.py .................................       [ 33%]
 tests\unit\test_graph_routes.py .................                        [ 41%]
 tests\unit\test_introspection.py ......................                  [ 52%]
 tests\unit\test_logging.py ...                                           [ 53%]
-tests\unit\test_migration.py ...............                             [ 61%]
-tests\unit\test_ontology_loader.py .....                                 [ 63%]
+tests\unit\test_migration.py ................                            [ 61%]
+tests\unit\test_ontology_loader.py .....                                 [ 64%]
 tests\unit\test_ontology_validator.py .....                              [ 66%]
-tests\unit\test_provenance.py ............................               [ 79%]
+tests\unit\test_provenance.py ............................               [ 80%]
 tests\unit\test_temporal.py ........................                     [ 91%]
 tests\unit\test_validator.py .................                           [100%]
 
@@ -42,24 +40,24 @@ core\__init__.py                     1      0   100%
 core\config\__init__.py              2      0   100%
 core\config\settings.py             41      0   100%
 core\graph\__init__.py               3      0   100%
-core\graph\client.py               263    125    52%   96-110, 127, 156, 165-166, 182-185, 197, 204-205, 250, 253-254, 267-268, 298, 310, 346-420, 432-443, 480-495, 511-524, 539-557, 575-594, 609-612, 665, 684-690, 705-716, 731-734
+core\graph\client.py               263    125    52%   96-110, 127, 156, 165-166, 182-185, 197, 204-205, 250, 253-254, 267-268, 298, 310, 346-420, 432-443, 480-493, 509-520, 535-553, 571-589, 604-607, 660, 679-685, 700-711, 726-731
 core\graph\exceptions.py            16      0   100%
 core\graph\models.py                95      0   100%
 core\graph\provenance.py            31      1    97%   93
-core\graph\queries.py              264     79    70%   99-100, 133-136, 159, 200-203, 236-239, 272-275, 330-333, 371-377, 387-390, 414-417, 440, 452-455, 507-510, 541-544, 573-574, 594-597, 630-631, 674-677, 713-716, 770-773, 796-799, 825-828
-core\graph\temporal.py              56      0   100%
-core\graph\validator.py            222     59    73%   185-186, 252, 266, 287-299, 318-330, 349-355, 372-376, 381-385, 396-397, 439-440, 481-482, 500-522, 613, 625
+core\graph\queries.py              264     32    88%   99-100, 134, 159, 201, 237, 273, 331, 369-375, 386, 412-415, 438, 451, 504, 538, 589, 624-625, 669, 708, 765, 791, 820
+core\graph\temporal.py              55      0   100%
+core\graph\validator.py            222     59    73%   185-186, 256, 270, 291-303, 322-334, 358-368, 385-389, 394-398, 411-412, 454-455, 496-497, 515-537, 628, 642
 core\logging\__init__.py             2      0   100%
 core\logging\logger.py              25      0   100%
 core\observability\__init__.py       2      0   100%
 core\observability\metrics.py        7      0   100%
 core\ontology\__init__.py            3      0   100%
-core\ontology\diff.py              107      9    92%   104, 106, 108, 110, 112, 206, 212, 216, 221
+core\ontology\diff.py              107      7    93%   108, 110, 112, 114, 116, 218, 223
 core\ontology\introspection.py      22      0   100%
 core\ontology\loader.py             26      0   100%
-core\ontology\migration.py          58      7    88%   143-152
+core\ontology\migration.py          58      0   100%
 core\ontology\validator.py          25      1    96%   63
 --------------------------------------------------------------
-TOTAL                             1271    281    78%
+TOTAL                             1270    225    82%
 
-======================= 204 passed, 2 warnings in 4.66s =======================
+======================= 206 passed, 2 warnings in 8.32s =======================

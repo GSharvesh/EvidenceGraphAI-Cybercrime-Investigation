@@ -51,7 +51,9 @@ services:
       start_period: 30s
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2024-11-07T00-52-20Z
+    # Chainguard MinIO image — replaces quay.io/minio/minio which was
+    # removed from public registries in September 2026 (returns 401).
+    image: cgr.dev/chainguard/minio:latest
     container_name: evidencegraphai-minio
     ports:
       - "9000:9000"
@@ -63,7 +65,9 @@ services:
     volumes:
       - minio_data:/data
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
+      # Chainguard distroless image does not include curl;
+      # use the bundled mc (MinIO Client) to check readiness.
+      test: [ "CMD-SHELL", "mc alias set local http://localhost:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin} >/dev/null 2>&1 && mc ready local || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
