@@ -1,0 +1,34 @@
+# EvidenceGraphAI — Edge Type Count Audit
+# Auditor: Antigravity Phase 1 Verification Agent
+# Date: 2026-09-24T18:25:00+05:30
+
+================================================================================
+FILE-BY-FILE EDGE TYPE COUNT VERIFICATION
+================================================================================
+
+| # | File                                                   | Declared Count | Edge Types Listed                                                    | Status |
+|---|--------------------------------------------------------|----------------|----------------------------------------------------------------------|--------|
+| 1 | core/graph/models.py (L125: "15 Relationship Types")   | 15             | Exploits, Delivers, CommunicatesWith, UsesCertificate, MapsTo,      | ✅ PASS |
+|   |                                                        |                | LinkedCampaign, DowngradesTo, DerivedFrom, Precedes,                 |        |
+|   |                                                        |                | ExpectedToLeadTo, DetectedBy, ExportedAs, HasResponse,               |        |
+|   |                                                        |                | ResolvesTo, Supersedes                                               |        |
+| 2 | core/ontology/schema.yaml (L3: "15 relationship types")| 15             | EXPLOITS, DELIVERS, COMMUNICATES_WITH, USES_CERTIFICATE, MAPS_TO,   | ✅ PASS |
+|   |                                                        |                | LINKED_CAMPAIGN, DOWNGRADES_TO, DERIVED_FROM, PRECEDES,              |        |
+|   |                                                        |                | EXPECTED_TO_LEAD_TO, DETECTED_BY, EXPORTED_AS, HAS_RESPONSE,        |        |
+|   |                                                        |                | RESOLVES_TO, SUPERSEDES                                              |        |
+| 3 | docs/ontology/reference.md (L27: "15 Total")           | 15             | Same 15 types listed in table with source/target constraints         | ✅ PASS |
+| 4 | README.md (L10: "15 ontology relationship types")      | 15             | Mentioned in context of SUPERSEDES append-only versioning            | ✅ PASS |
+| 5 | docs/architecture/overview.md (L11: "15 edge types")   | 15             | Referenced in Domain Layer description                               | ✅ PASS |
+| 6 | docs/reports/phase1_completion_report.md (§2.2)        | 15             | All 15 enumerated in numbered list (L65-L79)                         | ✅ PASS |
+| 7 | docs/architecture/decisions/0007-temporal-versioning-   | 15             | "15th relationship type in the ontology" (L123)                      | ✅ PASS |
+|   | strategy.md (§Deviation)                               |                | Explicit deviation documented with rationale                         |        |
+
+================================================================================
+AUDIT RESULT: ALL 7 FILES DECLARE 15 RELATIONSHIP TYPES — CONSISTENT
+================================================================================
+
+Notes:
+- The 15th type (SUPERSEDES) was added in Phase 1 as a deliberate architectural
+  decision documented in ADR 0007 (append-only temporal versioning).
+- No file declares the original 14-count without acknowledging the deviation.
+- Phase 2 agents must inherit the 15-edge ontology.

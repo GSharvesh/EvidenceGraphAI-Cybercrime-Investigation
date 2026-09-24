@@ -1,0 +1,15 @@
+# EvidenceGraphAI — Docker Isolation Verification
+# Date: 2026-09-24T18:19:50+05:30
+# Command: Select-String -Path docs\setup\development.md -Pattern "exclusive|isolat|ONLY"
+
+Match found at line 18:
+> **Docker Isolation Requirement:** The Docker host must run ONLY the
+> EvidenceGraphAI containers (`evidencegraphai-neo4j`,
+> `evidencegraphai-postgres`, `evidencegraphai-redis`,
+> `evidencegraphai-minio`) to avoid port conflicts. If other containers
+> are running on the same ports (7687, 7474, 5432, 6379, 9000, 9001),
+> stop them before starting EvidenceGraphAI.
+
+Location: docs/setup/development.md, line 18 (inside an [!IMPORTANT] callout)
+
+CONCLUSION: ✅ Docker container exclusivity requirement is documented.

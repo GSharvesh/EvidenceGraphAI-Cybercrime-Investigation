@@ -1,0 +1,22 @@
+# EvidenceGraphAI — Pre-commit Verification (Fresh Run)
+# Date: 2026-09-24T18:19:37+05:30
+# Command: .\.venv\Scripts\pre-commit.exe run --all-files
+
+ruff.....................................................................Passed
+ruff-format..............................................................Passed
+black....................................................................Passed
+trim trailing whitespace.................................................Passed
+fix end of files.........................................................Passed
+check yaml...............................................................Passed
+check toml...............................................................Passed
+check for merge conflicts................................................Passed
+check for added large files..............................................Passed
+detect private key.......................................................Passed
+don't commit to branch...................................................Passed
+Validate GitHub Workflows................................................Passed
+
+# Result: ALL 12 HOOKS PASSED (including check-added-large-files which
+#         previously failed due to WinError 4551 AppLocker policy)
+#
+# NOTE: The AppLocker issue appears to have been resolved since the original
+#       --no-verify commit. All hooks now pass cleanly on this Windows host.
