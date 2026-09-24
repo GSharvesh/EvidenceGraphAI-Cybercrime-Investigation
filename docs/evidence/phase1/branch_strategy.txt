@@ -1,0 +1,28 @@
+﻿EvidenceGraphAI Phase 1 — Branch Strategy
+
+Remote: origin
+
+Current remote branches:
+- master: 19cce3d952b0769b78fd86d3c5db0a18c1566bb0
+- main:   c42d27faa4b9836a0d63f673729bd693f8cfe715
+
+master commit:
+19cce3d docs: add Phase 1 CI verification evidence (run 36012100223)
+
+main commit:
+c42d27f docs: update push verification evidence for MinIO fix commit
+
+Default branch:
+  HEAD branch: master
+
+Observation:
+origin/master and origin/main currently do NOT point to the same commit.
+
+This is intentional at this verification point because the latest Phase 1 CI
+verification evidence was committed to master after the previous main mirror
+commit.
+
+Phase 1 finalization must update main only if the repository branch strategy
+requires main to mirror master.
+
+Evidence generated: 2026-09-24 21:17:57
