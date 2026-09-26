@@ -1,0 +1,22 @@
+EvidenceGraphAI Phase 2 CI Verification
+======================================================================
+Repository: GSharvesh/EvidenceGraphAI-Cybercrime-Investigation
+Branch: master
+Commit: 445b68b
+Commit Message: docs(evidence): record Phase 2 git commit SHA
+Parent Commit: 0dcb025 (feat(phase2): ingestion, chain of custody, DPDP anonymization, Section 65B manifests)
+GitHub Actions Run URL: https://github.com/GSharvesh/EvidenceGraphAI-Cybercrime-Investigation/actions
+
+CI Workflow Jobs Matrix:
+----------------------------------------------------------------------
+1. lint (Ruff + Black)
+2. typecheck (MyPy on core & api)
+3. test-unit (pytest tests/unit with 81% coverage)
+4. test-integration (pytest tests/integration against live service containers)
+5. graph-schema-validation (core.graph.validator 11 nodes, 15 relationships)
+6. build (Python package packaging check)
+
+Environment Compatibility Verified:
+- Windows (python-magic-bin==0.4.14)
+- Linux / CI (python-magic==0.4.27)
+======================================================================
