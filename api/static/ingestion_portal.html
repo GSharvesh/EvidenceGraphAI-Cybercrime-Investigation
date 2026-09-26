@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forensic Ingest Console | EvidenceGraphAI</title>
+  <meta name="description" content="Forensic artifact ingestion and cryptographic chain of custody visualization console">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Cytoscape.js for interactive graph visualization -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <style>
+    :root {
+      --bg-base: #0a0d14;
+      --bg-surface: #101522;
+      --bg-surface-elevated: #182032;
+      --bg-card: rgba(20, 27, 45, 0.75);
+      --border-color: #232f48;
+      --border-glow: rgba(0, 229, 255, 0.25);
+      --text-primary: #f0f4fc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-cyan: #00e5ff;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Security Notice Banner */
+    .security-banner {
+      background: linear-gradient(90deg, #7c2d12, #9a3412, #7c2d12);
+      color: #ffedd5;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(251, 146, 60, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: rgba(16, 21, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-cyan), #3b82f6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #050b14;
+      font-size: 18px;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+    }
+
+    .brand-title h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-title p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .status-badge:hover {
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.broken {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: var(--accent-red);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: currentColor;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 24px 32px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 24px;
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      backdrop-filter: blur(16px);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .panel-header h2 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Ingestion Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border-color);
+      border-radius: 10px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: rgba(16, 21, 34, 0.4);
+      position: relative;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.05);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+    }
+
+    .dropzone-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      color: var(--accent-cyan);
+    }
+
+    .dropzone-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .dropzone-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* File Inspector Card */
+    .inspection-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inspection-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .inspection-label {
+      color: var(--text-muted);
+    }
+
+    .inspection-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    /* Live Hashing Progress */
+    .hash-progress-box {
+      background: #0d111a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hash-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      word-break: break-all;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Anonymization Toggle */
+    .config-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .select-input, .text-input {
+      background: #0d111a;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .select-input:focus, .text-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+    }
+
+    /* Right Column: Timeline, Manifest & Graph */
+    .right-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Timeline Styles */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: var(--border-color);
+    }
+
+    .timeline-item {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .timeline-item:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.1);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -24px;
+      top: 18px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bg-base);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+    }
+
+    .timeline-dot.INGEST { border-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
+    .timeline-dot.VERIFY { border-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+    .timeline-dot.ANONYMIZE { border-color: var(--accent-amber); box-shadow: 0 0 8px var(--accent-amber); }
+    .timeline-dot.EXPORT { border-color: var(--accent-purple); box-shadow: 0 0 8px var(--accent-purple); }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .action-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .action-tag.INGEST { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); }
+    .action-tag.VERIFY { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .action-tag.ANONYMIZE { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+    .action-tag.EXPORT { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+
+    .timeline-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .timeline-hash-link {
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: #0a0e17;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+    }
+
+    .timeline-hash-link span {
+      color: var(--accent-cyan);
+    }
+
+    /* Graph Container */
+    #graph-viewport {
+      width: 100%;
+      height: 320px;
+      background: #0c101b;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: #090c14;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--accent-cyan);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Security Banner -->
+  <div class="security-banner">
+    <span>⚠️ Developer Tool — Not for production use. Chain of Custody & DPDP Ingest Console (Phase 2)</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">EG</div>
+      <div class="brand-title">
+        <h1>Forensic Ingest Console</h1>
+        <p>EvidenceGraphAI &bull; Tamper-Evident Chain of Custody Subsystem</p>
+      </div>
+    </div>
+
+    <div class="header-status">
+      <div id="chain-status-badge" class="status-badge" onclick="runLedgerVerify()">
+        <span class="status-dot"></span>
+        <span id="chain-status-text">Ledger Chain: Intact</span>
+      </div>
+      <button class="btn btn-secondary" onclick="loadLedgerTimeline()" style="padding: 6px 12px; font-size: 12px;">Refresh</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Left Column: Ingest & Configuration -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Artifact Ingestion Zone</h2>
+      </div>
+
+      <!-- Drag and Drop Box -->
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+        <div class="dropzone-icon">⤓</div>
+        <div class="dropzone-title">Drag & drop forensic artifact here</div>
+        <div class="dropzone-subtitle">Supported: PCAP, JSON, PE/ELF/APK, Logs, X.509 Certificates, PDF</div>
+        <input type="file" id="file-input" class="file-input" onchange="handleFileSelect(event)">
+      </div>
+
+      <!-- File Inspection Preview -->
+      <div class="inspection-card" id="file-preview-card" style="display: none;">
+        <div class="inspection-row">
+          <span class="inspection-label">Selected File:</span>
+          <span class="inspection-value" id="preview-filename">-</span>
+        </div>
+        <div class="inspection-row">
+          <span class="inspection-label">File Size:</span>
+          <span class="inspection-value" id="preview-filesize">-</span>
+        </div>
+        <div class="inspection-row">
+          <span class="inspection-label">Detected Type:</span>
+          <span class="inspection-value" id="preview-filetype" style="color: var(--accent-cyan); font-weight: 700;">-</span>
+        </div>
+      </div>
+
+      <!-- Live Hashing Visualizer -->
+      <div class="hash-progress-box" id="hash-box" style="display: none;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);">
+          <span>SHA256 Cryptographic Digest:</span>
+          <span id="hash-status">Computing...</span>
+        </div>
+        <div class="hash-text" id="live-sha256-display">----------------------------------------------------------------</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="hash-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Ingest Configuration -->
+      <div class="config-card">
+        <div class="toggle-row">
+          <label for="actor-input">Investigator / Actor ID:</label>
+          <input type="text" id="actor-input" class="text-input" value="investigator-01" style="width: 180px;">
+        </div>
+
+        <div class="toggle-row">
+          <label for="anonymize-toggle">DPDP Act 2023 Anonymization:</label>
+          <input type="checkbox" id="anonymize-toggle" checked>
+        </div>
+
+        <div class="toggle-row">
+          <label for="method-select">Anonymization Method:</label>
+          <select id="method-select" class="select-input" style="width: 180px;">
+            <option value="MASK">MASK (e.g. XXXX-1234)</option>
+            <option value="PSEUDONYMIZE">PSEUDONYMIZE (HMAC Token)</option>
+            <option value="REDACT">REDACT ([REDACTED])</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn" id="ingest-btn" onclick="submitIngestion()" disabled>
+        <span>Ingest & Register in Ledger</span>
+      </button>
+
+      <!-- Section 65B Manifest Generation Trigger -->
+      <div style="border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 6px;">
+        <h3 style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase;">Legal Certification</h3>
+        <button class="btn btn-secondary" onclick="generateSection65BManifest()" style="width: 100%;">
+          <span>Generate Section 65B Evidence Manifest</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Timeline & Graph View -->
+    <div class="right-content">
+      <!-- Chain of Custody Timeline Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Cryptographic Chain of Custody Timeline</h2>
+          <span id="timeline-count" style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">0 Entries</span>
+        </div>
+
+        <div class="timeline" id="timeline-container">
+          <div style="color: var(--text-muted); font-size: 13px; padding: 12px 0;">No ledger entries recorded yet. Ingest an artifact to initialize the chain.</div>
+        </div>
+      </div>
+
+      <!-- Evidence Graph Mini-View -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Evidence Graph Topology (Mini-View)</h2>
+          <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">EvidenceArtifact Node Neighbors</span>
+        </div>
+        <div id="graph-viewport"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for Metadata & Manifest Inspector -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-title" style="font-size: 16px;">Ledger Entry Metadata</h3>
+        <button onclick="closeModal()" style="background: none; border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-content"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Action completed</div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    let selectedFile = null;
+    let selectedFileBytes = null;
+    let currentEvidenceId = null;
+    let cyInstance = null;
+
+    // Initialize Cytoscape
+    function initGraph() {
+      cyInstance = cytoscape({
+        container: document.getElementById('graph-viewport'),
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'background-color': '#00e5ff',
+              'label': 'data(label)',
+              'color': '#f0f4fc',
+              'font-size': '10px',
+              'font-family': 'JetBrains Mono',
+              'text-valign': 'bottom',
+              'text-margin-y': 4,
+              'width': 28,
+              'height': 28
+            }
+          },
+          {
+            selector: 'node[type="EvidenceArtifact"]',
+            style: {
+              'background-color': '#10b981',
+              'width': 34,
+              'height': 34
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'width': 2,
+              'line-color': '#334155',
+              'target-arrow-color': '#334155',
+              'target-arrow-shape': 'triangle',
+              'curve-style': 'bezier',
+              'label': 'data(label)',
+              'font-size': '8px',
+              'color': '#94a3b8'
+            }
+          }
+        ],
+        layout: { name: 'cose', animate: false }
+      });
+    }
+
+    // Drag and Drop Handling
+    const dropzone = document.getElementById('dropzone');
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        processSelectedFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
+      if (e.target.files.length > 0) {
+        processSelectedFile(e.target.files[0]);
+      }
+    }
+
+    async function processSelectedFile(file) {
+      selectedFile = file;
+      document.getElementById('preview-filename').textContent = file.name;
+      document.getElementById('preview-filesize').textContent = (file.size / 1024).toFixed(2) + ' KB';
+      document.getElementById('file-preview-card').style.display = 'flex';
+
+      // Detect type
+      const ext = file.name.split('.').pop().toLowerCase();
+      let typeLabel = 'BINARY ARTIFACT';
+      if (['pcap', 'pcapng'].includes(ext)) typeLabel = 'PCAP (Network Capture)';
+      else if (ext === 'json') typeLabel = 'JSON Record';
+      else if (['exe', 'dll'].includes(ext)) typeLabel = 'PE (Windows Executable)';
+      else if (ext === 'elf') typeLabel = 'ELF (Linux Executable)';
+      else if (ext === 'apk') typeLabel = 'APK (Android Package)';
+      else if (['log', 'txt'].includes(ext)) typeLabel = 'Forensic Log';
+      else if (['pem', 'crt', 'der'].includes(ext)) typeLabel = 'X.509 Certificate';
+      else if (ext === 'pdf') typeLabel = 'PDF Document';
+
+      document.getElementById('preview-filetype').textContent = typeLabel;
+
+      // Live SHA256 display
+      document.getElementById('hash-box').style.display = 'flex';
+      document.getElementById('hash-status').textContent = 'Computing SHA256...';
+      document.getElementById('hash-progress-fill').style.width = '30%';
+
+      const buffer = await file.arrayBuffer();
+      selectedFileBytes = buffer;
+
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      document.getElementById('hash-progress-fill').style.width = '100%';
+      document.getElementById('live-sha256-display').textContent = hashHex;
+      document.getElementById('hash-status').textContent = 'Complete';
+      document.getElementById('ingest-btn').disabled = false;
+    }
+
+    // Submit Ingestion
+    async function submitIngestion() {
+      if (!selectedFile) return;
+
+      const btn = document.getElementById('ingest-btn');
+      btn.disabled = true;
+      btn.textContent = 'Ingesting & Recording...';
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('actor', document.getElementById('actor-input').value);
+      formData.append('anonymize', document.getElementById('anonymize-toggle').checked);
+      formData.append('anonymize_method', document.getElementById('method-select').value);
+
+      try {
+        const resp = await fetch('/ingest', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          throw new Error(err.detail || 'Ingestion request failed');
+        }
+
+        const data = await resp.json();
+        currentEvidenceId = data.evidence_id;
+        showToast(`Artifact Ingested! ID: ${data.evidence_id}`);
+
+        await loadLedgerTimeline();
+        await updateMiniGraph(data);
+      } catch (err) {
+        showToast(`Ingestion Error: ${err.message}`, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ingest & Register in Ledger';
+      }
+    }
+
+    // Load Timeline
+    async function loadLedgerTimeline() {
+      try {
+        const resp = await fetch('/ledger?limit=50');
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+        const container = document.getElementById('timeline-container');
+        document.getElementById('timeline-count').textContent = `${data.entries.length} Entries`;
+
+        if (data.entries.length === 0) {
+          container.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No ledger entries recorded.</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        // Render chronological (latest first or oldest first)
+        data.entries.slice().reverse().forEach(entry => {
+          const item = document.createElement('div');
+          item.className = 'timeline-item';
+          item.onclick = () => showEntryModal(entry);
+
+          const dotClass = entry.action.toUpperCase();
+          item.innerHTML = `
+            <div class="timeline-dot ${dotClass}"></div>
+            <div class="timeline-header">
+              <span class="action-tag ${dotClass}">${entry.action}</span>
+              <span class="timeline-time">${new Date(entry.timestamp).toLocaleTimeString()}</span>
+            </div>
+            <div style="font-size: 13px; font-weight: 600;">Evidence ID: <span style="font-family: var(--font-mono); color: var(--accent-cyan);">${entry.evidence_id}</span></div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Actor: <b>${entry.actor}</b></div>
+            <div class="timeline-hash-link">
+              <span>Link:</span> ${entry.previous_hash.slice(0, 10)}... &rarr; <span>${entry.entry_hash.slice(0, 10)}...</span>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+
+        runLedgerVerify();
+      } catch (err) {
+        console.error('Failed to load ledger timeline', err);
+      }
+    }
+
+    // Ledger Verify
+    async function runLedgerVerify() {
+      try {
+        const resp = await fetch('/ledger/verify');
+        if (!resp.ok) return;
+        const result = await resp.json();
+
+        const badge = document.getElementById('chain-status-badge');
+        const text = document.getElementById('chain-status-text');
+
+        if (result.is_valid) {
+          badge.classList.remove('broken');
+          text.textContent = `Ledger Chain: Intact (${result.total_entries} Blocks)`;
+        } else {
+          badge.classList.add('broken');
+          text.textContent = `Chain Break at Block #${result.broken_at_id}!`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Update Mini-Graph
+    async function updateMiniGraph(ingestResult) {
+      if (!cyInstance) return;
+      cyInstance.elements().remove();
+
+      cyInstance.add([
+        {
+          group: 'nodes',
+          data: { id: ingestResult.evidence_id, label: `${ingestResult.artifact_type}\n${ingestResult.evidence_id.slice(0, 8)}...`, type: 'EvidenceArtifact' }
+        },
+        {
+          group: 'nodes',
+          data: { id: 'custody-ledger', label: 'CustodyLedger (PG)', type: 'Database' }
+        },
+        {
+          group: 'nodes',
+          data: { id: 'minio-vault', label: 'MinIO Storage', type: 'Storage' }
+        },
+        {
+          group: 'edges',
+          data: { source: ingestResult.evidence_id, target: 'custody-ledger', label: 'CHAIN_OF_CUSTODY' }
+        },
+        {
+          group: 'edges',
+          data: { source: ingestResult.evidence_id, target: 'minio-vault', label: 'STORED_IN' }
+        }
+      ]);
+
+      cyInstance.layout({ name: 'cose' }).run();
+    }
+
+    // Generate Manifest
+    async function generateSection65BManifest() {
+      if (!currentEvidenceId) {
+        showToast('Please ingest an artifact first or select an evidence ID', true);
+        return;
+      }
+
+      try {
+        const resp = await fetch('/manifests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            evidence_ids: [currentEvidenceId],
+            generator_identity: 'EvidenceGraphAI Forensic Officer',
+            actor: document.getElementById('actor-input').value
+          })
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          throw new Error(err.detail || 'Manifest generation failed');
+        }
+
+        const manifest = await resp.json();
+        showToast('Section 65B Manifest Generated & Signed!');
+        showEntryModal(manifest, 'Section 65B Evidence Manifest');
+        await loadLedgerTimeline();
+      } catch (err) {
+        showToast(`Manifest Error: ${err.message}`, true);
+      }
+    }
+
+    // Modal
+    function showEntryModal(data, title = 'Ledger Record Details') {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-content').textContent = JSON.stringify(data, null, 2);
+      document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.borderColor = isError ? 'var(--accent-red)' : 'var(--accent-cyan)';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // Window Onload
+    window.addEventListener('DOMContentLoaded', () => {
+      initGraph();
+      loadLedgerTimeline();
+    });
+  </script>
+</body>
+</html>

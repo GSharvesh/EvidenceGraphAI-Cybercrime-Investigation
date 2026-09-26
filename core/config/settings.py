@@ -104,6 +104,31 @@ class Settings(BaseSettings):
     metrics_enabled: bool = Field(default=True, description="Enable Prometheus metrics")
     metrics_port: int = Field(default=8000, description="Metrics export port")
 
+    # Ingestion Configuration (Phase 2)
+    ingestion_max_file_size_mb: int = Field(
+        default=2048, description="Maximum allowed file size for upload in MB"
+    )
+    ingestion_allowed_types: str = Field(
+        default="pcap,json,pe,elf,apk,text,pdf,cert_pem,cert_der",
+        description="Comma-separated list of allowed file types for ingestion",
+    )
+    ingestion_anonymize_pcap: bool = Field(
+        default=True, description="Enable DPDP anonymization filter on PCAPs"
+    )
+    ingestion_anonymize_logs: bool = Field(
+        default=True, description="Enable DPDP anonymization filter on Logs"
+    )
+
+    # Evidence Manifest Configuration (Phase 2)
+    manifest_signing_key: str = Field(
+        default="dev-insecure-manifest-signing-key-32b",
+        description="HMAC/Ed25519 key for signing Section 65B Evidence Manifests",
+    )
+    manifest_generator_identity: str = Field(
+        default="EvidenceGraphAI",
+        description="Identity of the Evidence Manifest generator",
+    )
+
 
 @lru_cache
 def get_settings() -> Settings:

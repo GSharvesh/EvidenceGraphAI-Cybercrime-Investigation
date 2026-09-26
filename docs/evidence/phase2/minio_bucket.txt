@@ -1,0 +1,52 @@
+======================================================================
+POSTGRESQL CUSTODY LEDGER MIGRATION VERIFICATION
+======================================================================
+Migration File: core\db\migrations\001_custody_ledger.sql (1442 bytes)
+
+--- [VERIFYING MIGRATION DDL & TRIGGERS] ---
+  * Table Creation                     : [VALID]
+  * Primary Key ID                     : [VALID]
+  * Evidence ID Column                 : [VALID]
+  * Cryptographic SHA256               : [VALID]
+  * Hash Chain Link (previous_hash)    : [VALID]
+  * Entry Hash (entry_hash)            : [VALID]
+  * Metadata JSONB                     : [VALID]
+  * Digital Signature                  : [VALID]
+  * Evidence ID Index                  : [VALID]
+  * Timestamp Index                    : [VALID]
+  * Action Index                       : [VALID]
+  * Entry Hash Index                   : [VALID]
+  * Immutability Function              : [VALID]
+  * Append-Only Trigger                : [VALID]
+
+--- [IMMUTABILITY TRIGGER RULE TEST] ---
+Trigger Event: BEFORE UPDATE OR DELETE ON custody_ledger
+Trigger Action: RAISE EXCEPTION 'Append-only violation: UPDATE and DELETE operations are strictly prohibited...'
+Enforcement Layer: PostgreSQL Database Engine (Server-Side)
+
+======================================================================
+MIGRATION AUDIT RESULT: PASS (All schema definitions and immutability triggers verified)
+======================================================================
+
+
+
+======================================================================
+MINIO FORENSIC OBJECT VAULT VERIFICATION
+======================================================================
+Target MinIO Endpoint: localhost:9000
+Forensic Bucket: evidencegraphai-artifacts
+Bucket Versioning: Enabled
+Storage Path Pattern: minio://evidencegraphai-artifacts/evidence/{evidence_id}/{sha256}
+Manifest Path Pattern: minio://evidencegraphai-artifacts/manifests/{manifest_id}.json
+
+--- [STORAGE OPERATIONS VERIFICATION] ---
+  * Bucket Initialization: [PASS]
+2026-09-26 14:48:34 [info     ] Enabled bucket versioning      bucket=evidencegraphai-artifacts
+  * Versioning Configuration: [PASS]
+2026-09-26 14:48:34 [info     ] Uploaded artifact to storage   storage_path=minio://evidencegraphai-artifacts/evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
+  * Immutable Upload Path: minio://evidencegraphai-artifacts/evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
+  * Object Key Format: evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
+
+======================================================================
+MINIO VAULT RESULT: PASS (Bucket configuration, versioning, and object layout verified)
+======================================================================

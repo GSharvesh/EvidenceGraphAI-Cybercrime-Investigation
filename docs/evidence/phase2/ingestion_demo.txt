@@ -1,0 +1,40 @@
+======================================================================
+HETEROGENEOUS FORENSIC ARTIFACT INGESTION DEMONSTRATION
+======================================================================
+Generated 7 synthetic forensic artifact test vectors:
+  * PCAP         (Size:    190 bytes, SHA256: 1e5b4aa91190717f...)
+  * JSON         (Size:    754 bytes, SHA256: 0132d36608c53a46...)
+  * PE           (Size:    216 bytes, SHA256: 9471e4c8a5a1b98d...)
+  * APK          (Size:    420 bytes, SHA256: 8fcbf03c23f8498a...)
+  * LOG          (Size:    422 bytes, SHA256: c03009283707766e...)
+  * CERT_PEM     (Size:   1176 bytes, SHA256: ed5f9e8f6553f2c0...)
+  * CERT_DER     (Size:    826 bytes, SHA256: 5e0df9f72f283475...)
+
+--- [FILE TYPE DETECTION RESULTS] ---
+  * Artifact: capture.pcap     Expected: PCAP       Detected: PCAP       Confidence: High
+  * Artifact: cve_record.json  Expected: JSON       Detected: JSON       Confidence: High
+  * Artifact: payload.exe      Expected: PE         Detected: PE         Confidence: High
+  * Artifact: sample.apk       Expected: APK        Detected: APK        Confidence: High
+  * Artifact: syslog.log       Expected: LOG        Detected: PLAIN_TEXT Confidence: High
+  * Artifact: server.crt       Expected: CERT_PEM   Detected: CERT_PEM   Confidence: High
+  * Artifact: server.der       Expected: CERT_DER   Detected: CERT_DER   Confidence: High
+
+--- [INGESTION PIPELINE EXECUTION] ---
+2026-09-26T09:18:37.360252Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-e4db265a-e32a-422a-89fb-451a5f273da0 sha256=1e5b4aa91190717fc2672b13309f920caad90efbb693d7171d3ad5f51d6ee055 size=190 type=PCAP
+  * INGEST SUCCESS: ID: EV-e4db265a-e32a-422a-89fb-451a5f273da0 | Type: PCAP       | SHA256: 1e5b4aa91190717f... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-e4db265a-e32a-422a-89fb-451a5f273da0/1e5b4aa91190717fc2672b13309f920caad90efbb693d7171d3ad5f51d6ee055
+2026-09-26T09:18:37.361263Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-9997ed4a-c1e6-46a3-9f42-6def8b5ef893 sha256=0132d36608c53a46f845cc9412a5267566e89e846fbd8bb6a2d243a4c1e6dfc0 size=754 type=JSON
+  * INGEST SUCCESS: ID: EV-9997ed4a-c1e6-46a3-9f42-6def8b5ef893 | Type: JSON       | SHA256: 0132d36608c53a46... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-9997ed4a-c1e6-46a3-9f42-6def8b5ef893/0132d36608c53a46f845cc9412a5267566e89e846fbd8bb6a2d243a4c1e6dfc0
+2026-09-26T09:18:37.362259Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-181ad3b0-de5b-41b0-acf8-3eb27e7fcfc6 sha256=9471e4c8a5a1b98d97a68c25db856eb9cf825d7acb11b805e83ea2f1be3fe7f1 size=216 type=PE
+  * INGEST SUCCESS: ID: EV-181ad3b0-de5b-41b0-acf8-3eb27e7fcfc6 | Type: PE         | SHA256: 9471e4c8a5a1b98d... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-181ad3b0-de5b-41b0-acf8-3eb27e7fcfc6/9471e4c8a5a1b98d97a68c25db856eb9cf825d7acb11b805e83ea2f1be3fe7f1
+2026-09-26T09:18:37.363246Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-8c03a3d9-569d-455c-8e87-8cee00b0f425 sha256=8fcbf03c23f8498a1a3b0d15933a47f77d50daf7c392301c60c2bf1cafcf62fd size=420 type=APK
+  * INGEST SUCCESS: ID: EV-8c03a3d9-569d-455c-8e87-8cee00b0f425 | Type: APK        | SHA256: 8fcbf03c23f8498a... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-8c03a3d9-569d-455c-8e87-8cee00b0f425/8fcbf03c23f8498a1a3b0d15933a47f77d50daf7c392301c60c2bf1cafcf62fd
+2026-09-26T09:18:37.363246Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-403059e6-3383-47a5-88dc-a02ac0c37565 sha256=c03009283707766e76677098d6c98d0af28d71bdc2da630e20bb8886f5297745 size=422 type=PLAIN_TEXT
+  * INGEST SUCCESS: ID: EV-403059e6-3383-47a5-88dc-a02ac0c37565 | Type: PLAIN_TEXT | SHA256: c03009283707766e... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-403059e6-3383-47a5-88dc-a02ac0c37565/c03009283707766e76677098d6c98d0af28d71bdc2da630e20bb8886f5297745
+2026-09-26T09:18:37.364253Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-43ab89e4-65a9-40bc-ba9a-f0169e33c14c sha256=ed5f9e8f6553f2c032ec224fac33e85bac6569059582e8a1c443e6200c019a3b size=1176 type=CERT_PEM
+  * INGEST SUCCESS: ID: EV-43ab89e4-65a9-40bc-ba9a-f0169e33c14c | Type: CERT_PEM   | SHA256: ed5f9e8f6553f2c0... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-43ab89e4-65a9-40bc-ba9a-f0169e33c14c/ed5f9e8f6553f2c032ec224fac33e85bac6569059582e8a1c443e6200c019a3b
+2026-09-26T09:18:37.364253Z [info     ] Ingestion successful           [core.ingestion.ingestor] correlation_id=None evidence_id=EV-751d5308-0cc2-44a7-93b8-38954a71a00e sha256=5e0df9f72f283475e3041d0c4e80690e92b5fdccb43143920598c9b612e36dde size=826 type=CERT_DER
+  * INGEST SUCCESS: ID: EV-751d5308-0cc2-44a7-93b8-38954a71a00e | Type: CERT_DER   | SHA256: 5e0df9f72f283475... | MinIO: minio://evidencegraphai-artifacts/evidence/EV-751d5308-0cc2-44a7-93b8-38954a71a00e/5e0df9f72f283475e3041d0c4e80690e92b5fdccb43143920598c9b612e36dde
+
+======================================================================
+INGESTION DEMO COMPLETE: 7/7 ARTIFACTS INGESTED
+======================================================================

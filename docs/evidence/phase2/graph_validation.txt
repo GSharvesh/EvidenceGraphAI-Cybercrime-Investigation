@@ -1,0 +1,45 @@
+2026-09-26 14:48:04 [info     ] Connected to Neo4j database    database=neo4j uri=bolt://localhost:7687
+2026-09-26 14:48:08 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:08 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=orphan_nodes
+2026-09-26 14:48:12 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:12 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=invalid_edge_types
+2026-09-26 14:48:16 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:16 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=missing_required_properties
+2026-09-26 14:48:20 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:20 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=invalid_property_types
+2026-09-26 14:48:24 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:24 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=dangling_references
+2026-09-26 14:48:28 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:28 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=confidence_range
+2026-09-26 14:48:32 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+2026-09-26 14:48:32 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
+Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
+Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=temporal_consistency
+No violations found.
+Summary: 0 error(s), 0 warning(s), 0 info(s)

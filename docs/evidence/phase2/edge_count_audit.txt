@@ -1,0 +1,32 @@
+Ontology Version: 1.0.0
+Total Node Types (11):
+  - Node: CVE
+  - Node: Victim
+  - Node: Attacker
+  - Node: Malware
+  - Node: APKSample
+  - Node: Domain
+  - Node: IPAddress
+  - Node: Certificate
+  - Node: ATT&CKTechnique
+  - Node: LogEntry
+  - Node: EvidenceArtifact
+
+Total Relationship Types (15):
+  - Edge: EXPLOITS
+  - Edge: DELIVERS
+  - Edge: COMMUNICATES_WITH
+  - Edge: USES_CERTIFICATE
+  - Edge: MAPS_TO
+  - Edge: LINKED_CAMPAIGN
+  - Edge: DOWNGRADES_TO
+  - Edge: DERIVED_FROM
+  - Edge: PRECEDES
+  - Edge: EXPECTED_TO_LEAD_TO
+  - Edge: DETECTED_BY
+  - Edge: EXPORTED_AS
+  - Edge: HAS_RESPONSE
+  - Edge: RESOLVES_TO
+  - Edge: SUPERSEDES
+
+AUDIT RESULT: PASS (11 Node Types, 15 Relationship Types - including SUPERSEDES)

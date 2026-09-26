@@ -3,15 +3,19 @@
 import time
 import uuid
 from collections.abc import Awaitable, Callable
+from pathlib import Path
 
 import structlog
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from api.routes.dev_viewer import router as dev_viewer_router
 from api.routes.graph import router as graph_router
 from api.routes.health import router as health_router
+from api.routes.ingest import router as ingest_router
+from api.routes.ledger import router as ledger_router
+from api.routes.manifests import router as manifests_router
 from api.routes.metrics import router as metrics_router
 from core.config.settings import get_settings
 from core.logging.logger import configure_logging, get_logger
@@ -94,6 +98,26 @@ app.include_router(health_router)
 app.include_router(metrics_router)
 app.include_router(graph_router)
 app.include_router(dev_viewer_router)
+app.include_router(ingest_router)
+app.include_router(ledger_router)
+app.include_router(manifests_router)
+
+
+@app.get(
+    "/dev/ingestion-portal",
+    response_class=HTMLResponse,
+    summary="Forensic Ingestion & Chain of Custody Portal (developer tool)",
+    include_in_schema=True,
+)
+def serve_ingestion_portal() -> HTMLResponse:
+    """Serves the developer Forensic Ingest Console single-page interface."""
+    portal_path = Path(__file__).parent / "static" / "ingestion_portal.html"
+    if not portal_path.exists():
+        return HTMLResponse(
+            content="<h3>Ingestion portal file not found</h3>",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return HTMLResponse(content=portal_path.read_text(encoding="utf-8"))
 
 
 @app.get("/", summary="Root application metadata")

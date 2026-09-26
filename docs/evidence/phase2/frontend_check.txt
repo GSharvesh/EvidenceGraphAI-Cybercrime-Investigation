@@ -1,0 +1,20 @@
+2026-09-26T09:18:38.756767Z [info     ] HTTP Request: GET http://testserver/dev/ingestion-portal "HTTP/1.1 200 OK" [httpx] correlation_id=None
+======================================================================
+FORENSIC INGEST CONSOLE (/dev/ingestion-portal) VERIFICATION
+======================================================================
+HTTP Status Code: 200
+Content-Type: text/html; charset=utf-8
+Payload Size: 30459 bytes
+
+--- [COMPONENT VERIFICATION CHECKLIST] ---
+  * Security Banner               : [PRESENT]
+  * Drag-and-Drop Zone            : [PRESENT]
+  * Live SHA256 Streamer          : [PRESENT]
+  * Chain Timeline                : [PRESENT]
+  * Section 65B Manifest Button   : [PRESENT]
+  * DPDP Anonymization Switch     : [PRESENT]
+  * Cytoscape.js Mini Graph       : [PRESENT]
+
+======================================================================
+FRONTEND VERIFICATION RESULT: PASS (All UI components verified)
+======================================================================

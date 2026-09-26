@@ -4,16 +4,17 @@
 
 ---
 
-## Current Status: Phase 1 Completed (Evidence Graph Core)
+## Current Status: Phase 2 Completed (Ingestion & Chain of Custody)
 
-Phase 1 establishes the production-grade **Evidence Graph Core**:
-- **Append-Only Temporal Versioning**: Versioned entity tracking (`::v{n}`) linked via `SUPERSEDES` relationships (15 ontology relationship types).
-- **Provenance & Lineage**: Source agent tracking and strict/flexible confidence validation.
-- **Query Library**: 22 parameterized Cypher graph traversal, neighborhood expansion, and point-in-time time-travel queries.
-- **Graph Integrity Engine**: 7-rule `GraphValidator` CLI detecting anomalies and orphan entities.
-- **Developer Viewer**: Interactive vis.js graph visualizer with localhost security gating at `/dev/viewer`.
+Phase 2 establishes the production-grade **Ingestion & Chain of Custody** subsystem:
+- **Heterogeneous Forensic Ingest Pipeline**: Ingests PCAPs, JSON vulnerability records, PE/ELF/APK binaries, logs, and X.509 certificates.
+- **Append-Only PostgreSQL Custody Ledger**: Database-trigger enforced immutable audit trail with sequential SHA256 cryptographic hash chaining.
+- **Section 65B Evidence Manifest Generator**: Digitally signed electronic evidence certificates complying with Section 65B of the Indian Evidence Act.
+- **DPDP Act 2023 Privacy Filters**: Automated detection and masking/pseudonymization of Aadhaar, PAN, phone, email, and payment cards across PCAPs and logs.
+- **Forensic Ingest Console**: Modern developer UI with live Web Crypto hashing, timeline visualization, and Cytoscape.js graph rendering at `/dev/ingestion-portal`.
+- **Developer Viewer**: Interactive graph visualizer with localhost security gating at `/dev/viewer`.
 
-For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [Phase 1 Completion Report](docs/reports/phase1_completion_report.md).
+For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [Phase 2 Completion Report](docs/reports/phase2_completion_report.md).
 
 ---
 

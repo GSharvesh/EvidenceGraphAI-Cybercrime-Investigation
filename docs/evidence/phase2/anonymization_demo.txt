@@ -1,0 +1,42 @@
+======================================================================
+DPDP ACT 2023 COMPLIANT FORENSIC PII ANONYMIZATION DEMONSTRATION
+======================================================================
+
+--- [ORIGINAL RAW LOG] ---
+2026-09-26 10:00:00 [AUTH] User login: rajesh.kumar@cybersec.in from 192.168.1.105 (internal)
+2026-09-26 10:01:15 [KYC] Verified Aadhaar: 2345 6789 0123 with phone: +91-9876543210
+2026-09-26 10:02:30 [PAYMENT] PAN: ABCDE1234F, Card: 4532-7589-2341-9823 CVV: 891
+2026-09-26 10:03:00 [ALERT] Attack detected from external C2 IP: 198.51.100.45 targeting 10.0.0.12
+
+--- [DETECTED PII ENTITIES (7)] ---
+  * Category: EMAIL           Confidence: 0.99 Match: 'rajesh.kumar@cybersec.in' [Pos: 39:63]
+  * Category: PRIVATE_IP      Confidence: 0.95 Match: '192.168.1.105' [Pos: 69:82]
+  * Category: AADHAAR         Confidence: 0.85 Match: '2345 6789 0123' [Pos: 138:152]
+  * Category: PHONE           Confidence: 0.92 Match: '+91-9876543210' [Pos: 165:179]
+  * Category: PAN             Confidence: 0.98 Match: 'ABCDE1234F' [Pos: 215:225]
+  * Category: AADHAAR         Confidence: 0.85 Match: '4532-7589-2341' [Pos: 233:247]
+  * Category: PRIVATE_IP      Confidence: 0.95 Match: '10.0.0.12' [Pos: 351:360]
+
+--- [ANONYMIZED LOG (METHOD: MASK)] ---
+2026-09-26 10:00:00 [AUTH] User login: rXXXXXXXXXXr@cybersec.in from 192.168.X.X (internal)
+2026-09-26 10:01:15 [KYC] Verified Aadhaar: XXXX-XXXX-0123 with phone: +91-XXXXX-3210
+2026-09-26 10:02:30 [PAYMENT] PAN: AXXXXXX34F, Card: XXXX-XXXX-2341-9823 CVV: 891
+2026-09-26 10:03:00 [ALERT] Attack detected from external C2 IP: 198.51.100.45 targeting 10.0.X.X
+
+Masking Summary: {'PRIVATE_IP': 2, 'AADHAAR': 2, 'PAN': 1, 'PHONE': 1, 'EMAIL': 1}
+
+--- [ANONYMIZED LOG (METHOD: PSEUDONYMIZE)] ---
+2026-09-26 10:00:00 [AUTH] User login: PSEUDO_EMAIL_bb4915363d97 from PSEUDO_PRIVATE_IP_5f970822b9ca (internal)
+2026-09-26 10:01:15 [KYC] Verified Aadhaar: PSEUDO_AADHAAR_d3ae238a1c6b with phone: PSEUDO_PHONE_fb6db8a25fe8
+2026-09-26 10:02:30 [PAYMENT] PAN: PSEUDO_PAN_fa6ba376fc5f, Card: PSEUDO_AADHAAR_157d802d2f2e-9823 CVV: 891
+2026-09-26 10:03:00 [ALERT] Attack detected from external C2 IP: 198.51.100.45 targeting PSEUDO_PRIVATE_IP_47d43a1549a2
+
+--- [LOG FILTER FILE EXECUTION] ---
+Processed: 4 lines
+Modified: 4 lines
+PII Findings Redacted: 7
+Category Breakdown: {'PRIVATE_IP': 2, 'EMAIL': 1, 'PHONE': 1, 'AADHAAR': 2, 'PAN': 1}
+
+======================================================================
+DEMONSTRATION RESULT: PASS (All DPDP PII redacted, C2 indicators preserved)
+======================================================================
