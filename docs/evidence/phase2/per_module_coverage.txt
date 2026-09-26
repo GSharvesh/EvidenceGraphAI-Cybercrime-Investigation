@@ -63,8 +63,8 @@ core\privacy\pii_detector.py        91      7    92%   69, 80, 132, 194-195, 245
 core\storage\__init__.py             4      0   100%
 core\storage\bucket_manager.py      29      0   100%
 core\storage\exceptions.py          12      0   100%
-core\storage\minio_client.py       129      2    98%   36, 168
+core\storage\minio_client.py       129      2    98%   36, 180
 --------------------------------------------------------------
 TOTAL                             2482    282    89%
 
-332 passed, 2 warnings in 10.56s
+332 passed, 2 warnings in 21.98s

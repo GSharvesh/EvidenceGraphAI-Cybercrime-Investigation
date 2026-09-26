@@ -1,38 +1,29 @@
-8380e94 docs(evidence): add CI verification metadata for Phase 2
+43956ad docs(phase2): independent verification, per-module coverage, and gap closure
 
 
 --- Git Working Tree Status ---
- M core/db/postgres.py
- M core/ingestion/validators.py
+M  .gitignore
+A  core/storage/__init__.py
+AM core/storage/bucket_manager.py
+A  core/storage/exceptions.py
+AM core/storage/minio_client.py
  M docs/evidence/phase2/black.txt
  M docs/evidence/phase2/frontend_check.txt
+ M docs/evidence/phase2/git_verification.txt
  M docs/evidence/phase2/graph_validation.txt
  M docs/evidence/phase2/ingestion_demo.txt
+ M docs/evidence/phase2/ledger_tamper_demo.txt
  M docs/evidence/phase2/manifest_demo.txt
  M docs/evidence/phase2/migration.txt
  M docs/evidence/phase2/minio_bucket.txt
+ M docs/evidence/phase2/per_module_coverage.txt
  M docs/evidence/phase2/pytest_integration.txt
  M docs/evidence/phase2/pytest_unit.txt
- M scripts/generate_all_evidence.py
- M tests/unit/test_anonymizer.py
- M tests/unit/test_detector.py
- M tests/unit/test_ingestor.py
- M tests/unit/test_ledger.py
- M tests/unit/test_minio_client.py
- M tests/unit/test_pcap_filter.py
-?? docs/evidence/phase2/frontend_accessibility.txt
-?? docs/evidence/phase2/git_verification.txt
-?? docs/evidence/phase2/independent_reverification.txt
-?? docs/evidence/phase2/ledger_tamper_demo.txt
-?? docs/evidence/phase2/per_module_coverage.txt
-?? docs/evidence/phase2/platform_parity.txt
-?? docs/evidence/phase2/precommit_full_run.txt
-?? docs/evidence/phase2/reverify_black.txt
-?? docs/evidence/phase2/reverify_graph_validation.txt
-?? docs/evidence/phase2/reverify_mypy.txt
-?? docs/evidence/phase2/reverify_pytest_integration.txt
-?? docs/evidence/phase2/reverify_pytest_unit.txt
-?? docs/evidence/phase2/reverify_ruff.txt
-?? scripts/demo_ledger_tamper.py
-?? tests/unit/test_postgres_client.py
-?? tests/unit/test_validators.py
+ M docs/evidence/phase2/reverify_black.txt
+ M docs/evidence/phase2/reverify_graph_validation.txt
+ M docs/evidence/phase2/reverify_pytest_integration.txt
+ M docs/evidence/phase2/reverify_pytest_unit.txt
+ M tests/integration/conftest.py
+ M tests/integration/test_ingestion_integration.py
+ M tests/integration/test_ledger_integration.py
+ M tests/integration/test_manifest_integration.py

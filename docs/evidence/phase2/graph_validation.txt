@@ -1,45 +1,43 @@
-2026-09-26 15:16:15 [info     ] Connected to Neo4j database    database=neo4j uri=bolt://localhost:7687
-2026-09-26 15:16:19 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:19 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=orphan_nodes
-2026-09-26 15:16:23 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:23 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=invalid_edge_types
-2026-09-26 15:16:27 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:27 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=missing_required_properties
-2026-09-26 15:16:31 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:31 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=invalid_property_types
-2026-09-26 15:16:35 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:35 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=dangling_references
-2026-09-26 15:16:39 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:39 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=confidence_range
-2026-09-26 15:16:43 [error    ] Neo4j query error              error=Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-2026-09-26 15:16:43 [error    ] Validation rule raised an exception error=Query execution error: Couldn't connect to localhost:7687 (resolved to ()):
-Failed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [WinError 10061] No connection could be made because the target machine actively refused it)
-Failed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [WinError 10061] No connection could be made because the target machine actively refused it) rule=temporal_consistency
-No violations found.
-Summary: 0 error(s), 0 warning(s), 0 info(s)
+2026-09-26 17:20:42 [info     ] Connected to Neo4j database    database=neo4j uri=bolt://localhost:7687
+SEVERITY    RULE                            ENTITY_ID                             TYPE    MESSAGE                                                                         
+----------  ------------------------------  ------------------------------------  ------  --------------------------------------------------------------------------------
+warning     orphan_nodes                    EV-9e5f0828-6795-4ce3-bc63-d3deb0d50e1c  node    Node 'EV-9e5f0828-6795-4ce3-bc63-d3deb0d50e1c' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-ab629bb1-e298-4b6e-a264-590fb32ebab6  node    Node 'EV-ab629bb1-e298-4b6e-a264-590fb32ebab6' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-6de073f0-0ac4-4efa-96c4-3ee0a56b9660  node    Node 'EV-6de073f0-0ac4-4efa-96c4-3ee0a56b9660' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-9312f9fe-77f3-417a-9d8e-3d5da8d1e257  node    Node 'EV-9312f9fe-77f3-417a-9d8e-3d5da8d1e257' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-f85073ab-64b3-4845-8081-9068dfb309f4  node    Node 'EV-f85073ab-64b3-4845-8081-9068dfb309f4' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-8f91e78a-491e-44a5-ac79-1c8df7f28c2f  node    Node 'EV-8f91e78a-491e-44a5-ac79-1c8df7f28c2f' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-93994a7b-28b7-4f55-8ee2-217023b7ee2f  node    Node 'EV-93994a7b-28b7-4f55-8ee2-217023b7ee2f' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-801240ae-9645-4ac4-8451-124c010d27cd  node    Node 'EV-801240ae-9645-4ac4-8451-124c010d27cd' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-bb90287c-3619-466b-b0f4-8db448bc4885  node    Node 'EV-bb90287c-3619-466b-b0f4-8db448bc4885' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-2c66a476-72ea-42cf-ac46-81ef8ecb9a88  node    Node 'EV-2c66a476-72ea-42cf-ac46-81ef8ecb9a88' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-c4b24980-f798-49cc-902b-e236ee694895  node    Node 'EV-c4b24980-f798-49cc-902b-e236ee694895' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-62230c3f-3439-4fe5-bc22-4915f1a8e635  node    Node 'EV-62230c3f-3439-4fe5-bc22-4915f1a8e635' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-1a09e6b6-6ee1-45c7-8a31-72e85402409b  node    Node 'EV-1a09e6b6-6ee1-45c7-8a31-72e85402409b' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-0f45e10e-60e6-4cef-81a4-1b630c57d9fa  node    Node 'EV-0f45e10e-60e6-4cef-81a4-1b630c57d9fa' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-6969450e-8268-498f-aa6f-fadd41316dcf  node    Node 'EV-6969450e-8268-498f-aa6f-fadd41316dcf' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-f468817f-6678-450d-bdee-d7c0f0c1567d  node    Node 'EV-f468817f-6678-450d-bdee-d7c0f0c1567d' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-c1792aea-042e-4031-8d2d-7a347ce89e0d  node    Node 'EV-c1792aea-042e-4031-8d2d-7a347ce89e0d' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-e3b06f68-6cf6-471d-8083-7b1cfd937104  node    Node 'EV-e3b06f68-6cf6-471d-8083-7b1cfd937104' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-b0de0e3d-7568-4aeb-9640-ee62b2c9a966  node    Node 'EV-b0de0e3d-7568-4aeb-9640-ee62b2c9a966' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-98237aa4-1a2c-4c8c-aa2d-d4276a756c26  node    Node 'EV-98237aa4-1a2c-4c8c-aa2d-d4276a756c26' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-99c9c122-599a-44a9-bc44-e9953947f707  node    Node 'EV-99c9c122-599a-44a9-bc44-e9953947f707' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-8da75e07-eeaf-4fc2-bc3e-712b405faaba  node    Node 'EV-8da75e07-eeaf-4fc2-bc3e-712b405faaba' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-dbb70b06-9032-40dd-8bdd-1440406d440b  node    Node 'EV-dbb70b06-9032-40dd-8bdd-1440406d440b' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-7327e4bf-68cc-4447-a195-dedb270ae4f3  node    Node 'EV-7327e4bf-68cc-4447-a195-dedb270ae4f3' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-ff6d1f28-8e08-4407-b472-2950414c2201  node    Node 'EV-ff6d1f28-8e08-4407-b472-2950414c2201' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-94bb8ac8-5bca-45fb-827d-9ef5d47923b7  node    Node 'EV-94bb8ac8-5bca-45fb-827d-9ef5d47923b7' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-4b90d74c-b146-4545-bdf0-f828792a0c14  node    Node 'EV-4b90d74c-b146-4545-bdf0-f828792a0c14' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-83a8e3ad-1165-4522-ad36-b90394705099  node    Node 'EV-83a8e3ad-1165-4522-ad36-b90394705099' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-a391732c-42fb-499c-a5f3-9e312555b42f  node    Node 'EV-a391732c-42fb-499c-a5f3-9e312555b42f' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-16c1409b-3a64-4f75-8b38-b2e5fef4494e  node    Node 'EV-16c1409b-3a64-4f75-8b38-b2e5fef4494e' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-06aba19c-4dc2-4dcd-9120-f88ef15ed41c  node    Node 'EV-06aba19c-4dc2-4dcd-9120-f88ef15ed41c' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-5aa25b75-7acf-4e75-bddc-39973ed56847  node    Node 'EV-5aa25b75-7acf-4e75-bddc-39973ed56847' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-87c0cb47-eb76-47bb-bfe6-98abb99d598e  node    Node 'EV-87c0cb47-eb76-47bb-bfe6-98abb99d598e' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-484ed409-188a-45b1-a86e-95a17f65ff0e  node    Node 'EV-484ed409-188a-45b1-a86e-95a17f65ff0e' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-fbe3e918-7cb0-4a34-a587-68039286b22e  node    Node 'EV-fbe3e918-7cb0-4a34-a587-68039286b22e' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-77844018-e820-4560-b461-93695fa44092  node    Node 'EV-77844018-e820-4560-b461-93695fa44092' (label: EvidenceArtifact) has no incoming or outgoing edges.
+warning     orphan_nodes                    EV-7e3259af-fff0-4b76-b25d-c2e4041c3ebc  node    Node 'EV-7e3259af-fff0-4b76-b25d-c2e4041c3ebc' (label: EvidenceArtifact) has no incoming or outgoing edges.
+
+Total: 37 violation(s) shown.
+Summary: 0 error(s), 37 warning(s), 0 info(s)

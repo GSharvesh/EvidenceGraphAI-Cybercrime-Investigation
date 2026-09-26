@@ -60,7 +60,7 @@ def test_ingest_all_artifact_types(
         result = ingestor.ingest(
             data_or_stream_or_path=raw_bytes,
             filename=filename,
-            actor="integration-agent",
+            actor="integration_agent",
             anonymize=False,
         )
 

@@ -16,7 +16,7 @@ def test_ledger_append_and_verify(test_postgres: PostgresClient) -> None:
     e1 = ledger.append_entry(
         evidence_id="TestPhase2_EV_1",
         action="INGEST",
-        actor="integration-tester",
+        actor="integration_tester",
         sha256="1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
         metadata={"filename": "test1.pcap"},
     )
@@ -25,7 +25,7 @@ def test_ledger_append_and_verify(test_postgres: PostgresClient) -> None:
     e2 = ledger.append_entry(
         evidence_id="TestPhase2_EV_1",
         action="VERIFY",
-        actor="integration-verifier",
+        actor="integration_verifier",
         sha256="1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
         metadata={"status": "PASS"},
     )

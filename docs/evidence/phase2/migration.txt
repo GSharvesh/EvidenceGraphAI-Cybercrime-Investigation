@@ -41,9 +41,9 @@ Manifest Path Pattern: minio://evidencegraphai-artifacts/manifests/{manifest_id}
 
 --- [STORAGE OPERATIONS VERIFICATION] ---
   * Bucket Initialization: [PASS]
-2026-09-26 15:16:45 [info     ] Enabled bucket versioning      bucket=evidencegraphai-artifacts
+2026-09-26 17:20:44 [info     ] Enabled bucket versioning      bucket=evidencegraphai-artifacts
   * Versioning Configuration: [PASS]
-2026-09-26 15:16:45 [info     ] Uploaded artifact to storage   storage_path=minio://evidencegraphai-artifacts/evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
+2026-09-26 17:20:44 [info     ] Uploaded artifact to storage   storage_path=minio://evidencegraphai-artifacts/evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
   * Immutable Upload Path: minio://evidencegraphai-artifacts/evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
   * Object Key Format: evidence/EV-TEST-STORAGE/c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
 

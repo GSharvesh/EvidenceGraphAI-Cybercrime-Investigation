@@ -6,14 +6,14 @@ plugins: anyio-4.15.1, asyncio-0.23.7, cov-5.0.0
 asyncio: mode=Mode.AUTO
 collected 33 items
 
-tests\integration\test_anonymization_integration.py s                    [  3%]
-tests\integration\test_graph_integration.py s                            [  6%]
-tests\integration\test_ingestion_integration.py s                        [  9%]
-tests\integration\test_ledger_integration.py sss                         [ 18%]
-tests\integration\test_manifest_integration.py s                         [ 21%]
-tests\integration\test_queries_integration.py sssssssssssss              [ 60%]
-tests\integration\test_temporal_integration.py ssssssss                  [ 84%]
-tests\integration\test_validator_integration.py sssss                    [100%]
+tests\integration\test_anonymization_integration.py .                    [  3%]
+tests\integration\test_graph_integration.py .                            [  6%]
+tests\integration\test_ingestion_integration.py .                        [  9%]
+tests\integration\test_ledger_integration.py ...                         [ 18%]
+tests\integration\test_manifest_integration.py .                         [ 21%]
+tests\integration\test_queries_integration.py .............              [ 60%]
+tests\integration\test_temporal_integration.py ........                  [ 84%]
+tests\integration\test_validator_integration.py .....                    [100%]
 
 ============================== warnings summary ===============================
 .venv\Lib\site-packages\starlette\formparsers.py:12
@@ -38,29 +38,29 @@ core\__init__.py                     1      0   100%
 core\config\__init__.py              2      0   100%
 core\config\settings.py             47      0   100%
 core\custody\__init__.py             6      0   100%
-core\custody\chain.py               61     32    48%   52, 78-88, 106-196
+core\custody\chain.py               61      8    87%   107, 117, 136-146, 171-181
 core\custody\exceptions.py          14      0   100%
-core\custody\ledger.py             111     91    18%   26, 30-37, 68-144, 155-181, 185-190, 196, 200-205, 211-241, 248-260
-core\custody\manifest.py            93     50    46%   71-73, 79-86, 109-213, 234-244
-core\custody\verifier.py            52     26    50%   47-48, 68-138
+core\custody\ledger.py             111     49    56%   30-37, 70-73, 125, 137-144, 162-163, 165-166, 180-181, 185-190, 204-205, 211-241, 250-253, 255
+core\custody\manifest.py            93      7    92%   110, 124, 181-182, 200-201, 241
+core\custody\verifier.py            52      9    83%   70-73, 87-102, 129-130
 core\db\__init__.py                  3      0   100%
 core\db\exceptions.py                8      0   100%
 core\db\migrations\__init__.py       0      0   100%
-core\db\postgres.py                 78     46    41%   52-60, 66-68, 79-90, 98-109, 117-128
+core\db\postgres.py                 78     32    59%   47-54, 69-71, 87-90, 98-109, 122-128
 core\graph\__init__.py               3      0   100%
-core\graph\client.py               263    207    21%   63, 108-110, 114-117, 130, 155-187, 196-211, 221-236, 247-254, 265-268, 295-313, 346-420, 432-443, 457-463, 480-493, 509-520, 535-553, 571-589, 604-607, 637-665, 679-685, 700-711, 726-731
+core\graph\client.py               263     56    79%   108-110, 131-133, 156, 174-185, 197, 204-205, 250, 253-254, 267-268, 298, 310, 348, 443, 520, 571-589, 660, 685, 700-711
 core\graph\exceptions.py            16      0   100%
 core\graph\models.py                95     95     0%   3-186
-core\graph\provenance.py            31     21    32%   86-129, 156, 174
-core\graph\queries.py              264    231    12%   62, 77-78, 92-100, 118-136, 150-161, 176-177, 192-203, 221-239, 257-275, 296-333, 350-388, 409-415, 433-453, 464-465, 476-477, 495-506, 525-540, 555-568, 579-591, 603-625, 648-671, 689-710, 731-767, 782-793, 810-822
-core\graph\temporal.py              55     41    25%   55, 67, 82-89, 111-112, 139-154, 179, 205-222, 237, 252-254
-core\graph\validator.py            222    179    19%   71, 75, 92, 96-97, 101-105, 109, 146-148, 167-191, 199-207, 222-270, 285-334, 349-398, 404-412, 427-455, 470-537, 556-583, 587-606, 615-638, 642
+core\graph\provenance.py            31     11    65%   88, 93, 98, 106-108, 118, 123, 129, 156, 174
+core\graph\queries.py              264    158    40%   97-100, 133-136, 158-161, 176-177, 192-203, 224, 236-239, 260, 272-275, 330-333, 350-388, 409-415, 433-453, 464-465, 476-477, 503-506, 525-540, 565-568, 588-591, 622-625, 667-671, 689-710, 731-767, 782-793, 810-822
+core\graph\temporal.py              55     19    65%   86, 88-89, 111-112, 139-154, 216, 222
+core\graph\validator.py            222     75    66%   71, 96-97, 181-182, 185-186, 238-249, 256, 270, 295, 303, 326, 333-334, 368, 411-412, 454-455, 496-497, 515-537, 556-583, 587-606, 615-638, 642
 core\ingestion\__init__.py           6      0   100%
-core\ingestion\detector.py         118     85    28%   23-24, 56-171, 191-310
+core\ingestion\detector.py         118     36    69%   23-24, 57, 83, 93-94, 123-124, 192-195, 200-202, 205, 235-236, 253-254, 272-310
 core\ingestion\exceptions.py        12      0   100%
-core\ingestion\hasher.py            14      8    43%   18-21, 34-36, 48
-core\ingestion\ingestor.py         105     70    33%   67-72, 101-279
-core\ingestion\validators.py        36     28    22%   24-35, 49-56, 74-112
+core\ingestion\hasher.py            14      7    50%   18-21, 34-36
+core\ingestion\ingestor.py         105     22    79%   106, 110-112, 141-147, 168-169, 204-206, 223-238, 265-267
+core\ingestion\validators.py        36      6    83%   25, 34, 50, 56, 81, 112
 core\logging\__init__.py             2      0   100%
 core\logging\logger.py              25      1    96%   42
 core\observability\__init__.py       2      0   100%
@@ -70,52 +70,18 @@ core\ontology\diff.py              107    107     0%   19-230
 core\ontology\introspection.py      22     22     0%   17-124
 core\ontology\loader.py             26      6    77%   26, 36-37, 42-43, 48
 core\ontology\migration.py          58     58     0%   28-173
-core\ontology\validator.py          25     16    36%   26-38, 52-63
+core\ontology\validator.py          25      4    84%   28, 38, 54, 63
 core\privacy\__init__.py             6      0   100%
-core\privacy\anonymizer.py          85     60    29%   40, 44-89, 93-96, 100, 108-114, 132-172
+core\privacy\anonymizer.py          85     18    79%   55, 61, 66, 72, 78, 84-89, 93-96, 100, 110-114, 133
 core\privacy\exceptions.py           6      0   100%
-core\privacy\log_filter.py          40     25    38%   30-31, 47-65, 81-89
-core\privacy\pcap_filter.py         87     65    25%   38-39, 55-169, 187-195
-core\privacy\pii_detector.py        91     60    34%   67-73, 78-89, 114, 130-250
+core\privacy\log_filter.py          40      8    80%   63, 81-89
+core\privacy\pcap_filter.py         87     63    28%   55-169, 187-195
+core\privacy\pii_detector.py        91      7    92%   69, 80, 132, 194-195, 245-246
 core\storage\__init__.py             4      0   100%
-core\storage\bucket_manager.py      29     18    38%   17, 21-25, 29-36, 40-43
+core\storage\bucket_manager.py      29     18    38%   17, 21-25, 31-38, 46-49
 core\storage\exceptions.py          12      0   100%
-core\storage\minio_client.py       129     95    26%   34, 46, 51, 56, 60-67, 73, 98-153, 157-171, 175-184, 188-206, 210-226, 230-243
+core\storage\minio_client.py       129     53    59%   34, 46, 63-69, 78-80, 115-118, 137-142, 155-161, 175-189, 199-204, 208-232, 257-258, 272-281
 --------------------------------------------------------------
-TOTAL                             2482   1743    30%
+TOTAL                             2482    955    62%
 
-=========================== short test summary info ===========================
-SKIPPED [1] tests\integration\test_anonymization_integration.py:17: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_graph_integration.py:14: Neo4j container not reachable on bolt://localhost:7687
-SKIPPED [1] tests\integration\test_ingestion_integration.py:24: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_ledger_integration.py:11: PostgreSQL container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_ledger_integration.py:39: PostgreSQL container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_ledger_integration.py:60: PostgreSQL container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_manifest_integration.py:17: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:33: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:44: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:51: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:61: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:71: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:81: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:92: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:102: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:114: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:124: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:133: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:145: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_queries_integration.py:165: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:15: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:32: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:64: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:83: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:96: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:117: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:132: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_temporal_integration.py:147: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_validator_integration.py:13: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_validator_integration.py:30: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_validator_integration.py:48: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_validator_integration.py:74: Neo4j container not reachable � skipping integration test
-SKIPPED [1] tests\integration\test_validator_integration.py:99: Neo4j container not reachable � skipping integration test
-======================= 33 skipped, 4 warnings in 6.58s =======================
+======================= 33 passed, 4 warnings in 15.34s =======================

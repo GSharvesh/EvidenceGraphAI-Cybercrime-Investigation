@@ -1,12 +1,12 @@
 ======================================================================
 SECTION 65B EVIDENCE MANIFEST GENERATION & VERIFICATION DEMO
 ======================================================================
-2026-09-26 15:16:46 [info     ] Generated Section 65B Evidence Manifest count=1 manifest_id=MANIFEST-a281184d-8074-4936-bf17-f05c67b3fc1a
+2026-09-26 17:20:46 [info     ] Generated Section 65B Evidence Manifest count=1 manifest_id=MANIFEST-25c85ab4-0696-42f7-aa7e-debfca88fb2b
 
-Manifest ID: MANIFEST-a281184d-8074-4936-bf17-f05c67b3fc1a
-Generated At: 2026-09-26T09:46:46.062622+00:00
+Manifest ID: MANIFEST-25c85ab4-0696-42f7-aa7e-debfca88fb2b
+Generated At: 2026-09-26T11:50:46.113664+00:00
 Generator Identity: EvidenceGraphAI Section 65B Digital Evidence Authority
-Digital Signature (HMAC-SHA256): 9573a4dd8544ebc04e5470283350a8171a869758f6b4d489615266fa7e225083
+Digital Signature (HMAC-SHA256): e849c19e72de45f8fd0ec32d88905263b507bf3d4098f6113ee53edb877bdf19
 Legal Framework: Section 65B Indian Evidence Act / BNSS 2023
 Legal Declaration Summary: CERTIFICATE UNDER SECTION 65B OF THE INDIAN EVIDENCE ACT, 1872: I hereby certify that the electronic records detailed in...
 
@@ -14,8 +14,8 @@ Signature Verification: VALID / VERIFIED
 
 --- [FULL CANONICAL MANIFEST JSON] ---
 {
-  "manifest_id": "MANIFEST-a281184d-8074-4936-bf17-f05c67b3fc1a",
-  "generated_at": "2026-09-26T09:46:46.062622+00:00",
+  "manifest_id": "MANIFEST-25c85ab4-0696-42f7-aa7e-debfca88fb2b",
+  "generated_at": "2026-09-26T11:50:46.113664+00:00",
   "generator_identity": "EvidenceGraphAI Section 65B Digital Evidence Authority",
   "legal_framework": "Section 65B Indian Evidence Act / BNSS 2023",
   "legal_declaration": "CERTIFICATE UNDER SECTION 65B OF THE INDIAN EVIDENCE ACT, 1872: I hereby certify that the electronic records detailed in this manifest were produced by computer systems operating lawfully and properly during the period over which the evidence was collected. The data was ingested in the ordinary course of investigative activities, stored in an immutable, tamper-evident object repository, and tracked via a cryptographic hash-chained ledger. The cryptographic SHA256 hashes herein confirm the mathematical integrity and unaltered state of the source artifacts.",
@@ -27,7 +27,7 @@ Signature Verification: VALID / VERIFIED
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "artifact_type": "UNKNOWN",
       "storage_path": "minio://evidencegraphai-artifacts/evidence/EV-20260926-FORENSIC-001/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "ingest_timestamp": "2026-09-26T09:46:46.059624+00:00",
+      "ingest_timestamp": "2026-09-26T11:50:46.108658+00:00",
       "actor": "agent://ingestor",
       "anonymized": true,
       "dpdp_anonymization": {
@@ -43,10 +43,10 @@ Signature Verification: VALID / VERIFIED
       "evidence_id": "EV-20260926-FORENSIC-001",
       "action": "INGEST",
       "actor": "agent://ingestor",
-      "timestamp": "2026-09-26T09:46:46.059624+00:00",
+      "timestamp": "2026-09-26T11:50:46.108658+00:00",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "entry_hash": "65e44746da0f62eace367a3c2240d19bb7f0fdbaa48ceab7b9ac44a785f07a10",
+      "entry_hash": "1495cd24749a367ac2128becdec76f83f731cc8e94c13f754cc629b01dcaa16c",
       "metadata": {
         "filename": "incident_traffic.pcap",
         "file_type": "PCAP"
@@ -58,10 +58,10 @@ Signature Verification: VALID / VERIFIED
       "evidence_id": "EV-20260926-FORENSIC-001",
       "action": "ANONYMIZE",
       "actor": "agent://dpdp-filter",
-      "timestamp": "2026-09-26T09:46:46.059624+00:00",
+      "timestamp": "2026-09-26T11:50:46.108658+00:00",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "previous_hash": "65e44746da0f62eace367a3c2240d19bb7f0fdbaa48ceab7b9ac44a785f07a10",
-      "entry_hash": "d06ef8e3c184dcbc0e00c8ef7622617115bed2fbc6fc666aa4b30870c1a3ad4f",
+      "previous_hash": "1495cd24749a367ac2128becdec76f83f731cc8e94c13f754cc629b01dcaa16c",
+      "entry_hash": "0e56d31d950d5b3d6552e675f75ebff2ff85226fec6045d7588fcc7f2e2801e4",
       "metadata": {
         "method": "MASK",
         "pii_redacted": 7
@@ -75,7 +75,7 @@ Signature Verification: VALID / VERIFIED
     "message": "Ledger cryptographic hash chain fully verified from genesis"
   },
   "signature_algorithm": "HMAC-SHA256",
-  "digital_signature": "9573a4dd8544ebc04e5470283350a8171a869758f6b4d489615266fa7e225083",
+  "digital_signature": "e849c19e72de45f8fd0ec32d88905263b507bf3d4098f6113ee53edb877bdf19",
   "storage_uri": "minio://evidencegraphai-artifacts/manifests/MANIFEST-DEMO-001.json"
 }
 

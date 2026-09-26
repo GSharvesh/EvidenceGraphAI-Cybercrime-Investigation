@@ -11,14 +11,14 @@ CHAIN OF CUSTODY HASH-CHAIN TAMPER DETECTION DEMO
 
 [6] SIMULATING TAMPERING ATTACK:
     Attacker modifies Record 2 actor from 'dpdp-privacy-filter' to 'unauthorized-user'
-2026-09-26 15:16:44 [warning  ] Entry hash tamper detected     entry_id=2 recomputed=83e033b96762191c37e14ee0e8433e22f5b4fd588e03f07562ee18edda6215bb stored=a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3
+2026-09-26 17:20:43 [warning  ] Entry hash tamper detected     entry_id=2 recomputed=83e033b96762191c37e14ee0e8433e22f5b4fd588e03f07562ee18edda6215bb stored=a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3
     Tampered Chain Verification Result: is_valid=False
     Tamper Detection Message: Tamper detected at entry ID 2: entry_hash 'a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3' does not match computed hash '83e033b96762191c37e14ee0e8433e22f5b4fd588e03f07562ee18edda6215bb'
     Broken At Entry ID: 2
 
 [7] SIMULATING HASH-POINTER SPLICING ATTACK:
     Attacker tries to splice in forged previous_hash on Record 3
-2026-09-26 15:16:44 [warning  ] Chain continuity break detected entry_id=3 expected=a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3 prev_hash=deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+2026-09-26 17:20:43 [warning  ] Chain continuity break detected entry_id=3 expected=a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3 prev_hash=deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
     Spliced Chain Verification Result: is_valid=False
     Splice Detection Message: Chain break at entry ID 3: previous_hash 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' does not match expected previous entry hash 'a4c3e1343a4507fca722fd75f7c16532ea4c64302c110c346a2eec1973ea46f3'
     Broken At Entry ID: 3

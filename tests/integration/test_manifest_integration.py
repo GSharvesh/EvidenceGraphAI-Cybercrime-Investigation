@@ -38,13 +38,13 @@ def test_generate_and_verify_manifest_integration(
     ingest_res = ingestor.ingest(
         data_or_stream_or_path=generate_sample_json().encode("utf-8"),
         filename="TestPhase2_manifest_sample.json",
-        actor="forensic-officer",
+        actor="forensic_officer",
     )
 
     manifest = generator.generate_manifest(
         evidence_ids=[ingest_res.evidence_id],
         generator_identity="Chief Forensic Examiner",
-        actor="forensic-officer",
+        actor="forensic_officer",
     )
 
     assert manifest.manifest_id.startswith("MANIFEST-")

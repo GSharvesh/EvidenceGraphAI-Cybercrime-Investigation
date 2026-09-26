@@ -18,6 +18,7 @@ from core.custody.ledger import CustodyLedger
 from core.db.postgres import PostgresClient
 from core.graph.client import GraphClient
 from core.storage.minio_client import MinioClient
+from scripts.migrate_postgres import apply_migrations
 
 
 def _test_settings() -> Settings:
@@ -94,11 +95,22 @@ def test_client() -> Generator[GraphClient, None, None]:
     client.close()
 
 
+@pytest.fixture(scope="session", autouse=True)
+def init_test_databases() -> None:
+    """Ensures database schemas and migrations are applied before running integration tests."""
+    if _POSTGRES_UP:
+        settings = get_settings()
+        client = PostgresClient(settings=settings)
+        apply_migrations(client)
+
+
 @pytest.fixture(scope="function")
 def test_postgres() -> PostgresClient:
     """Provides a PostgresClient instance for integration tests."""
     settings = get_settings()
-    return PostgresClient(settings=settings)
+    client = PostgresClient(settings=settings)
+    apply_migrations(client)
+    return client
 
 
 @pytest.fixture(scope="function")

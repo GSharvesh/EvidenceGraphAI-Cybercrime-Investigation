@@ -107,5 +107,5 @@ Desktop.ini
 *.sqlite3
 *.db
 data/
-storage/
+/storage/
 logs/
