@@ -44,15 +44,17 @@ class PostgresClient:
         conn = None
         try:
             conn = psycopg.connect(self.conninfo, row_factory=dict_row)
-            yield conn
         except psycopg.OperationalError as exc:
             logger.error("PostgreSQL connection error", error=str(exc))
             raise DatabaseConnectionError(
                 f"Failed to connect to PostgreSQL: {exc}"
             ) from exc
         except Exception as exc:
-            logger.error("Unexpected database error", error=str(exc))
-            raise DatabaseError(f"Database error: {exc}") from exc
+            logger.error("Unexpected database connection error", error=str(exc))
+            raise DatabaseError(f"Database connection error: {exc}") from exc
+
+        try:
+            yield conn
         finally:
             if conn and not conn.closed:
                 conn.close()

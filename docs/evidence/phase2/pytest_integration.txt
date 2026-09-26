@@ -46,7 +46,7 @@ core\custody\verifier.py            52     26    50%   47-48, 68-138
 core\db\__init__.py                  3      0   100%
 core\db\exceptions.py                8      0   100%
 core\db\migrations\__init__.py       0      0   100%
-core\db\postgres.py                 77     44    43%   47, 53-55, 58, 64-66, 77-88, 96-107, 115-126
+core\db\postgres.py                 78     46    41%   52-60, 66-68, 79-90, 98-109, 117-128
 core\graph\__init__.py               3      0   100%
 core\graph\client.py               263    207    21%   63, 108-110, 114-117, 130, 155-187, 196-211, 221-236, 247-254, 265-268, 295-313, 346-420, 432-443, 457-463, 480-493, 509-520, 535-553, 571-589, 604-607, 637-665, 679-685, 700-711, 726-731
 core\graph\exceptions.py            16      0   100%
@@ -60,7 +60,7 @@ core\ingestion\detector.py         118     85    28%   23-24, 56-171, 191-310
 core\ingestion\exceptions.py        12      0   100%
 core\ingestion\hasher.py            14      8    43%   18-21, 34-36, 48
 core\ingestion\ingestor.py         105     70    33%   67-72, 101-279
-core\ingestion\validators.py        32     24    25%   24-35, 49-56, 74-107
+core\ingestion\validators.py        36     28    22%   24-35, 49-56, 74-112
 core\logging\__init__.py             2      0   100%
 core\logging\logger.py              25      1    96%   42
 core\observability\__init__.py       2      0   100%
@@ -82,7 +82,7 @@ core\storage\bucket_manager.py      29     18    38%   17, 21-25, 29-36, 40-43
 core\storage\exceptions.py          12      0   100%
 core\storage\minio_client.py       129     95    26%   34, 46, 51, 56, 60-67, 73, 98-153, 157-171, 175-184, 188-206, 210-226, 230-243
 --------------------------------------------------------------
-TOTAL                             2477   1737    30%
+TOTAL                             2482   1743    30%
 
 =========================== short test summary info ===========================
 SKIPPED [1] tests\integration\test_anonymization_integration.py:17: Neo4j container not reachable � skipping integration test
@@ -118,4 +118,4 @@ SKIPPED [1] tests\integration\test_validator_integration.py:30: Neo4j container 
 SKIPPED [1] tests\integration\test_validator_integration.py:48: Neo4j container not reachable � skipping integration test
 SKIPPED [1] tests\integration\test_validator_integration.py:74: Neo4j container not reachable � skipping integration test
 SKIPPED [1] tests\integration\test_validator_integration.py:99: Neo4j container not reachable � skipping integration test
-======================= 33 skipped, 4 warnings in 5.41s =======================
+======================= 33 skipped, 4 warnings in 6.58s =======================

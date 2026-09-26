@@ -1,0 +1,17 @@
+EvidenceGraphAI Phase 2 Platform Parity Assessment
+======================================================================
+Tested Platforms:
+- Windows 11 (Host development environment with Python 3.11.8)
+- Linux (Ubuntu-based GitHub Actions CI environment with Python 3.11)
+
+1. File Type Detection Parity:
+   - Primary: Pure-Python deterministic magic bytes & headers detection (PCAP, PCAPNG, PE, ELF 32/64, APK, JSON, Certificates PEM/DER).
+   - Fallback: On Windows, `python-magic-bin==0.4.14` (bundled libmagic DLL). On Linux / CI, `python-magic==0.4.27` (libmagic C-library).
+   - Validation: All 7 forensic formats resolve to identical DetectedType enums, MIME types, and normalized extensions across both operating systems.
+
+2. Cryptographic and Database Parity:
+   - SHA256 streaming hashing via standard library `hashlib.sha256()` produces identical digests on all platforms.
+   - HMAC-SHA256 signatures for Section 65B manifests execute identically via standard library `hmac`.
+   - PostgreSQL custody triggers and constraints execute server-side in PostgreSQL 16 Alpine container, ensuring 100% platform-agnostic append-only enforcement.
+   - MinIO S3 object versioning and key layout (`evidence/{id}/{sha256}`) operate platform-agnostically against MinIO container.
+======================================================================

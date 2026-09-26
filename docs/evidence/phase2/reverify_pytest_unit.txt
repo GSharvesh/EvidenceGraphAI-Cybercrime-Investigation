@@ -1,0 +1,103 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.8, pytest-8.2.2, pluggy-1.6.0
+rootdir: D:\EvidenceGraphAI
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-0.23.7, cov-5.0.0
+asyncio: mode=Mode.AUTO
+collected 332 items
+
+tests\unit\test_anonymizer.py .....                                      [  1%]
+tests\unit\test_api.py .....                                             [  3%]
+tests\unit\test_chain.py .....                                           [  4%]
+tests\unit\test_config.py ...                                            [  5%]
+tests\unit\test_detector.py .................                            [ 10%]
+tests\unit\test_diff.py ...............                                  [ 15%]
+tests\unit\test_graph_client.py ...........                              [ 18%]
+tests\unit\test_graph_models.py ..                                       [ 18%]
+tests\unit\test_graph_queries.py .................................       [ 28%]
+tests\unit\test_graph_routes.py .................                        [ 34%]
+tests\unit\test_hasher.py ...                                            [ 34%]
+tests\unit\test_ingestor.py ........                                     [ 37%]
+tests\unit\test_introspection.py ......................                  [ 43%]
+tests\unit\test_ledger.py ..................                             [ 49%]
+tests\unit\test_logging.py ...                                           [ 50%]
+tests\unit\test_manifest.py ...                                          [ 51%]
+tests\unit\test_migration.py ................                            [ 56%]
+tests\unit\test_minio_client.py ...................                      [ 61%]
+tests\unit\test_ontology_loader.py .....                                 [ 63%]
+tests\unit\test_ontology_validator.py .....                              [ 64%]
+tests\unit\test_pcap_filter.py ......                                    [ 66%]
+tests\unit\test_phase2_api.py ......                                     [ 68%]
+tests\unit\test_pii_detector.py .......                                  [ 70%]
+tests\unit\test_postgres_client.py ...............                       [ 75%]
+tests\unit\test_provenance.py ............................               [ 83%]
+tests\unit\test_temporal.py ........................                     [ 90%]
+tests\unit\test_validator.py .................                           [ 95%]
+tests\unit\test_validators.py ..........                                 [ 98%]
+tests\unit\test_verifier.py ....                                         [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\starlette\formparsers.py:12
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+.venv\Lib\site-packages\starlette\testclient.py:41
+  D:\EvidenceGraphAI\.venv\Lib\site-packages\starlette\testclient.py:41: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    [], typing.ContextManager[anyio.abc.BlockingPortal]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.8-final-0 -----------
+Name                             Stmts   Miss  Cover   Missing
+--------------------------------------------------------------
+core\__init__.py                     1      0   100%
+core\config\__init__.py              2      0   100%
+core\config\settings.py             47      0   100%
+core\custody\__init__.py             6      0   100%
+core\custody\chain.py               61      1    98%   117
+core\custody\exceptions.py          14      0   100%
+core\custody\ledger.py             111      4    96%   70-73, 255
+core\custody\manifest.py            93      6    94%   124, 181-182, 200-201, 241
+core\custody\verifier.py            52      4    92%   101-102, 129-130
+core\db\__init__.py                  3      0   100%
+core\db\exceptions.py                8      0   100%
+core\db\migrations\__init__.py       0      0   100%
+core\db\postgres.py                 78      3    96%   87, 106, 125
+core\graph\__init__.py               3      0   100%
+core\graph\client.py               263    125    52%   96-110, 127, 156, 165-166, 182-185, 197, 204-205, 250, 253-254, 267-268, 298, 310, 346-420, 432-443, 480-493, 509-520, 535-553, 571-589, 604-607, 660, 679-685, 700-711, 726-731
+core\graph\exceptions.py            16      0   100%
+core\graph\models.py                95      0   100%
+core\graph\provenance.py            31      1    97%   93
+core\graph\queries.py              264     32    88%   99-100, 134, 159, 201, 237, 273, 331, 369-375, 386, 412-415, 438, 451, 504, 538, 589, 624-625, 669, 708, 765, 791, 820
+core\graph\temporal.py              55      0   100%
+core\graph\validator.py            222     59    73%   185-186, 256, 270, 291-303, 322-334, 358-368, 385-389, 394-398, 411-412, 454-455, 496-497, 515-537, 628, 642
+core\ingestion\__init__.py           6      0   100%
+core\ingestion\detector.py         118      7    94%   23-24, 57, 235-236, 307-308
+core\ingestion\exceptions.py        12      0   100%
+core\ingestion\hasher.py            14      0   100%
+core\ingestion\ingestor.py         105      5    95%   168-169, 265-267
+core\ingestion\validators.py        36      0   100%
+core\logging\__init__.py             2      0   100%
+core\logging\logger.py              25      0   100%
+core\observability\__init__.py       2      0   100%
+core\observability\metrics.py        7      0   100%
+core\ontology\__init__.py            3      0   100%
+core\ontology\diff.py              107      7    93%   108, 110, 112, 114, 116, 218, 223
+core\ontology\introspection.py      22      0   100%
+core\ontology\loader.py             26      0   100%
+core\ontology\migration.py          58      0   100%
+core\ontology\validator.py          25      1    96%   63
+core\privacy\__init__.py             6      0   100%
+core\privacy\anonymizer.py          85      8    91%   55, 61, 66, 72, 78, 84, 88, 114
+core\privacy\exceptions.py           6      0   100%
+core\privacy\log_filter.py          40      1    98%   63
+core\privacy\pcap_filter.py         87      9    90%   96-99, 130, 162-166
+core\privacy\pii_detector.py        91      7    92%   69, 80, 132, 194-195, 245-246
+core\storage\__init__.py             4      0   100%
+core\storage\bucket_manager.py      29      0   100%
+core\storage\exceptions.py          12      0   100%
+core\storage\minio_client.py       129      2    98%   36, 168
+--------------------------------------------------------------
+TOTAL                             2482    282    89%
+
+====================== 332 passed, 2 warnings in 10.18s =======================

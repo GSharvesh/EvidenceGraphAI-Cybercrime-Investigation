@@ -89,19 +89,24 @@ def validate_allowed_type(
 
     # Normalize type matching
     type_aliases = {
-        "pcap": ["pcap", "pcapng"],
-        "json": ["json"],
-        "pe": ["pe", "exe", "dll"],
-        "elf": ["elf"],
-        "apk": ["apk"],
-        "plain_text": ["text", "plain_text", "log", "txt"],
-        "pdf": ["pdf"],
-        "cert_pem": ["cert_pem", "pem", "crt"],
-        "cert_der": ["cert_der", "der"],
+        "pcap": {"pcap", "pcapng"},
+        "json": {"json"},
+        "pe": {"pe", "exe", "dll"},
+        "elf": {"elf"},
+        "apk": {"apk"},
+        "plain_text": {"text", "plain_text", "log", "txt"},
+        "pdf": {"pdf"},
+        "cert_pem": {"cert_pem", "pem", "crt"},
+        "cert_der": {"cert_der", "der"},
     }
 
-    matching_keys = type_aliases.get(type_str, [type_str])
-    is_allowed = any(key in allowed_list for key in matching_keys)
+    matching_set = {type_str}
+    for canonical, aliases in type_aliases.items():
+        if type_str == canonical or type_str in aliases:
+            matching_set = {canonical} | aliases
+            break
+
+    is_allowed = any(item in allowed_list for item in matching_set)
 
     if not is_allowed:
         raise UnsupportedFileTypeError(

@@ -1,0 +1,16 @@
+EvidenceGraphAI Phase 2 Forensic Ingest Console Accessibility Assessment
+======================================================================
+Console URL: /static/ingestion_portal.html
+Validation Method: Live Chromium automated inspection & screenshot verification
+
+1. Developer Security Banner:
+   - Prominently positioned at the top of the viewport.
+   - Text: "DEVELOPER FORENSIC TEST CONSOLE (NO AUTHENTICATION REQUIRED IN DEV MODE)"
+   - Styling: High-contrast amber background (`#f59e0b`), dark text, explicit warning iconography.
+
+2. Accessibility & Usability Features:
+   - Contrast: High-contrast dark cybersecurity theme (`#0f172a` slate background, `#f8fafc` text, `#38bdf8` cyan accents) exceeding WCAG AA standards (>7:1 contrast ratio).
+   - Keyboard Navigation: All inputs, radio buttons, buttons, and file drop zones are focusable with visible focus rings.
+   - Visual Feedback: Real-time SHA256 computation indicator, live upload status bar, and color-coded chain integrity badge (green for valid, red for broken).
+   - Responsive Layout: Flexible multi-column card layout supporting 1080p+ down to tablet widths.
+======================================================================

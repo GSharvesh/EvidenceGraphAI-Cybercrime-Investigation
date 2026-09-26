@@ -1,6 +1,8 @@
 """Unit tests for forensic file type detection engine."""
 
 import io
+from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -32,6 +34,14 @@ def test_detect_json() -> None:
     assert result.file_type == DetectedType.JSON
     assert result.mime_type == "application/json"
     assert result.confidence >= 0.9
+
+
+def test_detect_json_array() -> None:
+    """Verifies JSON array detection."""
+    json_arr = b'[{"id": "CVE-1"}, {"id": "CVE-2"}]'
+    result = detect_file_type(json_arr, filename_hint="list.json")
+    assert result.file_type == DetectedType.JSON
+    assert result.details.get("json_root") == "array"
 
 
 def test_detect_pe() -> None:
@@ -89,6 +99,14 @@ def test_detect_plain_text_log() -> None:
     assert result.confidence >= 0.85
 
 
+def test_detect_file_path_input(tmp_path: Path) -> None:
+    """Verifies detection when given a file path."""
+    tmp_file = tmp_path / "test.json"
+    tmp_file.write_text('{"status": "ok"}', encoding="utf-8")
+    result = detect_file_type(tmp_file)
+    assert result.file_type == DetectedType.JSON
+
+
 def test_detect_stream_input() -> None:
     """Verifies detection from seekable binary stream."""
     stream = io.BytesIO(b"%PDF-1.4\n...")
@@ -110,3 +128,59 @@ def test_detect_unknown_binary() -> None:
     result = detect_file_type(rand_bytes, filename_hint="unknown.bin")
     assert result.file_type == DetectedType.UNKNOWN
     assert result.confidence == 0.0
+
+
+def test_detect_magic_fallbacks() -> None:
+    """Verifies magic library fallback branches for PDF, PCAP, Text, JSON."""
+    blob = b"\x00\x01\x02\x03" * 8
+
+    with (
+        patch("core.ingestion.detector.HAS_MAGIC", True),
+        patch("magic.from_buffer", return_value="application/pdf"),
+    ):
+        res = detect_file_type(blob)
+        assert res.file_type == DetectedType.PDF
+
+    with (
+        patch("core.ingestion.detector.HAS_MAGIC", True),
+        patch("magic.from_buffer", return_value="application/vnd.tcpdump.pcap"),
+    ):
+        res = detect_file_type(blob)
+        assert res.file_type == DetectedType.PCAP
+
+    with (
+        patch("core.ingestion.detector.HAS_MAGIC", True),
+        patch("magic.from_buffer", return_value="text/plain"),
+    ):
+        res = detect_file_type(blob)
+        assert res.file_type == DetectedType.PLAIN_TEXT
+
+    with (
+        patch("core.ingestion.detector.HAS_MAGIC", True),
+        patch("magic.from_buffer", return_value="application/json"),
+    ):
+        res = detect_file_type(blob)
+        assert res.file_type == DetectedType.JSON
+
+
+def test_detect_pcapng_magic_bytes() -> None:
+    """Verifies PCAP-NG magic byte signature."""
+    pcapng_bytes = b"\x0a\x0d\x0d\x0a" + b"\x00" * 32
+    res = detect_file_type(pcapng_bytes)
+    assert res.file_type == DetectedType.PCAP
+    assert res.details.get("format") == "pcapng"
+
+
+def test_detect_elf_32bit() -> None:
+    """Verifies 32-bit ELF binary detection."""
+    elf32_bytes = b"\x7fELF\x01\x01\x01\x00" + b"\x00" * 32
+    res = detect_file_type(elf32_bytes)
+    assert res.file_type == DetectedType.ELF
+    assert res.details.get("architecture") == "32-bit"
+
+
+def test_detect_corrupt_zip_fallback() -> None:
+    """Verifies corrupted zip header falls back gracefully."""
+    corrupt_zip = b"PK\x03\x04" + b"\xff" * 20
+    res = detect_file_type(corrupt_zip)
+    assert res.file_type in (DetectedType.PE, DetectedType.UNKNOWN)
