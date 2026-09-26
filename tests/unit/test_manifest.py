@@ -62,7 +62,7 @@ def test_generate_manifest_success(
     manifest = manifest_gen.generate_manifest(
         evidence_ids=["EV-1"],
         generator_identity="Chief Forensic Examiner",
-        actor="examiner-01",
+        actor="examiner_01",
     )
 
     assert manifest.manifest_id.startswith("MANIFEST-")

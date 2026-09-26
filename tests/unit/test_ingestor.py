@@ -75,7 +75,7 @@ def test_ingest_json_success(
     result = ingestor.ingest(
         data_or_stream_or_path=json_bytes,
         filename="nvd.json",
-        actor="analyst-01",
+        actor="analyst_01",
         source_metadata={"source": "NVD Feed"},
     )
 
