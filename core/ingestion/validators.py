@@ -1,7 +1,7 @@
 """Validation utilities for forensic artifact uploads."""
 
 import re
-from pathlib import Path
+from pathlib import PureWindowsPath
 
 from core.config.settings import Settings, get_settings
 from core.ingestion.detector import DetectedType
@@ -24,13 +24,13 @@ def sanitize_filename(filename: str) -> str:
     if not filename or not filename.strip():
         return "unnamed_artifact.bin"
 
-    # Strip path components and null bytes
+    # Strip path components and null bytes cross-platform
     cleaned = filename.replace("\x00", "").strip()
-    cleaned = Path(cleaned).name
+    cleaned = PureWindowsPath(cleaned).name
 
     # Remove dangerous characters
     cleaned = re.sub(r"[^\w\.\-\_]", "_", cleaned)
-    if not cleaned:
+    if not cleaned or not cleaned.strip("."):
         return "unnamed_artifact.bin"
     return cleaned
 
