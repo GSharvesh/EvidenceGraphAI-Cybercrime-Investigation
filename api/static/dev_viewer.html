@@ -10,6 +10,9 @@
   <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.9/styles/vis-network.min.css" />
 
+  <!-- Phase 2.1: Shared navigation bar -->
+  <script type="module" src="/static/assets/nav.js"></script>
+
   <style>
     :root {
       --bg: #0f1117;
@@ -315,6 +318,8 @@
 <div id="status-bar">
   <span id="status-msg">Ready. Click a node or edge to inspect.</span>
   <span id="status-time"></span>
+  <span style="flex: 1;"></span>
+  <span id="viewer-status-container"></span>
 </div>
 
 <script>
@@ -598,6 +603,138 @@ function lighten(hex) {
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', loadGraph);
+</script>
+
+<!-- Phase 2.1: SSE live-updates, status widget, deep linking, animations -->
+<script type="module">
+import { connectGraphStream } from '/static/assets/live.js';
+import { initStatusWidget } from '/static/assets/status.js';
+import { flashBackground, pulseOnce, animateCountUp } from '/static/assets/animations.js';
+import { getQueryParam, createLastUpdatedTicker, escapeHtml } from '/static/assets/utils.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  // -- Last-updated ticker in status bar --
+  const statusTimeEl = document.getElementById('status-time');
+  let lastUpdatedTicker = null;
+  if (statusTimeEl) {
+    lastUpdatedTicker = createLastUpdatedTicker(statusTimeEl, 'Updated');
+  }
+
+  // -- Deep link: ?focus=<node_id> --
+  const focusNodeId = getQueryParam('focus');
+  if (focusNodeId) {
+    // Wait for graph to be loaded, then focus
+    const waitForGraph = setInterval(() => {
+      if (!_network || !_visNodes) return;
+      clearInterval(waitForGraph);
+      const node = _visNodes.get(focusNodeId);
+      if (node) {
+        _network.focus(focusNodeId, {
+          scale: 1.5,
+          animation: { duration: 800, easingFunction: 'easeInOutQuad' },
+        });
+        _network.selectNodes([focusNodeId]);
+        showProps(node._raw, 'node');
+        setStatus(`Focused on node: ${focusNodeId}`);
+      } else {
+        setStatus(`Node not found: ${focusNodeId}`);
+      }
+    }, 200);
+    // Timeout after 10s
+    setTimeout(() => clearInterval(waitForGraph), 10000);
+  }
+
+  // -- Enhance property panel: add custody link for EvidenceArtifact nodes --
+  const origShowProps = window.showProps;
+  if (origShowProps) {
+    window.showProps = function(data, kind) {
+      origShowProps(data, kind);
+      if (kind === 'node') {
+        const labels = data._labels || [];
+        if (labels.includes('EvidenceArtifact') && data.id) {
+          const body = document.getElementById('props-body');
+          if (body) {
+            const linkDiv = document.createElement('div');
+            linkDiv.style.cssText = 'margin-top: 12px; padding: 8px 0; border-top: 1px solid var(--border);';
+            const link = document.createElement('a');
+            link.href = `/dev/ingestion-portal?evidence_id=${encodeURIComponent(data.id)}`;
+            link.textContent = 'View chain of custody →';
+            link.style.cssText = 'color: #00e5ff; font-size: 12px; font-weight: 600; text-decoration: none;';
+            link.addEventListener('mouseenter', () => link.style.textDecoration = 'underline');
+            link.addEventListener('mouseleave', () => link.style.textDecoration = 'none');
+            linkDiv.appendChild(link);
+            body.appendChild(linkDiv);
+          }
+        }
+      }
+    };
+  }
+
+  // -- Wire up live graph SSE stream --
+  connectGraphStream({
+    onNodeCreated: (evt) => {
+      if (!_visNodes || !_network) return;
+      const label = evt.node_type || '_default';
+      const color = NODE_COLORS[label] || NODE_COLORS._default;
+      const nodeData = {
+        id: evt.node_id,
+        label: `${label}\n${(evt.node_id || '').substring(0, 20)}`,
+        title: label,
+        color: { background: color, border: color, highlight: { background: color + '99', border: color } },
+        font: { color: '#e2e4f0', size: 11 },
+        shape: shapeForLabel(label),
+        _raw: { id: evt.node_id, _labels: [label], ...evt.properties },
+      };
+      try {
+        const oldCount = _visNodes.length;
+        _visNodes.update(nodeData);
+        const statNodes = document.getElementById('stat-nodes');
+        if (statNodes) {
+          animateCountUp(statNodes, oldCount, _visNodes.length);
+        }
+      } catch (e) { console.warn('[live] node update error:', e); }
+      if (lastUpdatedTicker) lastUpdatedTicker.update();
+    },
+    onEdgeCreated: (evt) => {
+      if (!_visEdges || !_network) return;
+      const edgeData = {
+        id: evt.edge_id,
+        from: evt.from_id,
+        to: evt.to_id,
+        label: evt.edge_type,
+        color: { color: EDGE_COLORS[evt.edge_type] || EDGE_COLORS._default, opacity: 0.75 },
+        font: { color: '#7e84a3', size: 9, align: 'middle' },
+        arrows: { to: { enabled: true, scaleFactor: 0.6 } },
+        smooth: { type: 'dynamic' },
+        _raw: evt,
+      };
+      try {
+        const oldCount = _visEdges.length;
+        _visEdges.update(edgeData);
+        const statEdges = document.getElementById('stat-edges');
+        if (statEdges) {
+          animateCountUp(statEdges, oldCount, _visEdges.length);
+        }
+      } catch (e) { console.warn('[live] edge update error:', e); }
+      if (lastUpdatedTicker) lastUpdatedTicker.update();
+    },
+    onNodeUpdated: (evt) => {
+      if (!_visNodes) return;
+      const existing = _visNodes.get(evt.node_id);
+      if (existing) {
+        existing._raw = { ...existing._raw, ...evt.properties };
+        _visNodes.update(existing);
+      }
+      if (lastUpdatedTicker) lastUpdatedTicker.update();
+    },
+  });
+
+  // Wire up system status widget in the bottom bar
+  const statusContainer = document.getElementById('viewer-status-container');
+  if (statusContainer) {
+    initStatusWidget(statusContainer);
+  }
+});
 </script>
 </body>
 </html>

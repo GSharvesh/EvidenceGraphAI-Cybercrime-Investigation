@@ -100,6 +100,10 @@ venv.bak/
 # OS artifacts
 .DS_Store
 Thumbs.db
+
+# PID files
+*.pid
+.evidencegraphai_api.pid
 Desktop.ini
 
 # Logs and databases

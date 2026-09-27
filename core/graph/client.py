@@ -30,6 +30,11 @@ from neo4j import Driver, GraphDatabase, Transaction
 from neo4j.exceptions import ClientError, ConstraintError, DriverError, Neo4jError
 
 from core.config.settings import Settings, get_settings
+from core.events.publisher import (
+    publish_edge_created,
+    publish_node_created,
+    publish_node_updated,
+)
 from core.graph.exceptions import (
     GraphConnectionError,
     GraphConstraintError,
@@ -310,6 +315,7 @@ class GraphClient:
             raise GraphQueryError(f"Failed to create node of type '{node_type}'")
 
         logger.debug("Node created successfully", node_type=node_type, id=node_id)
+        publish_node_created(node_type=node_type, node_id=node_id, properties=props)
         return node_id
 
     def update_node(
@@ -417,6 +423,7 @@ class GraphClient:
             new_id=new_id,
             version=new_version_number,
         )
+        publish_node_updated(node_type=node_type, node_id=new_id, properties=new_props)
         return new_id
 
     def _get_version_count(self, root_id: str, tx: Transaction | None = None) -> int:
@@ -662,6 +669,13 @@ class GraphClient:
             )
 
         logger.debug("Edge created successfully", edge_type=edge_type, id=edge_id)
+        publish_edge_created(
+            edge_type=edge_type,
+            edge_id=edge_id,
+            from_id=from_id,
+            to_id=to_id,
+            properties=props,
+        )
         return edge_id
 
     def get_edge(

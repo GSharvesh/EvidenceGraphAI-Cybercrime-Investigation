@@ -14,6 +14,7 @@ from core.custody.chain import (
 from core.custody.exceptions import CustodyLedgerError
 from core.db.exceptions import DatabaseError
 from core.db.postgres import PostgresClient
+from core.events.publisher import publish_ledger_entry
 from core.logging.logger import get_logger
 
 logger = get_logger("core.custody.ledger")
@@ -132,7 +133,20 @@ class CustodyLedger:
                 actor=actor,
                 entry_hash=entry_hash[:16] + "...",
             )
-            return self._row_to_entry(inserted_row)
+            entry = self._row_to_entry(inserted_row)
+            publish_ledger_entry(
+                evidence_id=entry.evidence_id,
+                action=entry.action,
+                actor=entry.actor,
+                sha256=entry.sha256,
+                previous_hash=entry.previous_hash,
+                entry_hash=entry.entry_hash,
+                metadata=entry.metadata,
+                entry_id=entry.id,
+                signature=entry.signature,
+                timestamp=entry.timestamp,
+            )
+            return entry
 
         except DatabaseError as exc:
             logger.error("Failed to append ledger entry", error=str(exc))

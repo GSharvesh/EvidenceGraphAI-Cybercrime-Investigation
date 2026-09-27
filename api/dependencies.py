@@ -30,14 +30,20 @@ def get_app_logger() -> BoundLogger:
     return get_logger("api")
 
 
+def get_graph_client_instance(settings: Settings | None = None) -> GraphClient:
+    """Returns singleton GraphClient instance without generator semantics."""
+    global _graph_client_instance
+    if _graph_client_instance is None:
+        cfg = settings or get_settings()
+        _graph_client_instance = GraphClient(settings=cfg)
+    return _graph_client_instance
+
+
 def get_graph_client(
     settings: Settings = Depends(get_app_settings),
 ) -> Generator[GraphClient, None, None]:
     """Dependency provider for Neo4j GraphClient instance."""
-    global _graph_client_instance
-    if _graph_client_instance is None:
-        _graph_client_instance = GraphClient(settings=settings)
-    yield _graph_client_instance
+    yield get_graph_client_instance(settings=settings)
 
 
 def get_postgres_client(

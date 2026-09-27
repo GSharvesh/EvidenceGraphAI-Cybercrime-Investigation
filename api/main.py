@@ -9,6 +9,7 @@ import structlog
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from api.routes.dev_viewer import router as dev_viewer_router
 from api.routes.graph import router as graph_router
@@ -17,6 +18,7 @@ from api.routes.ingest import router as ingest_router
 from api.routes.ledger import router as ledger_router
 from api.routes.manifests import router as manifests_router
 from api.routes.metrics import router as metrics_router
+from api.routes.sse import router as sse_router
 from core.config.settings import get_settings
 from core.logging.logger import configure_logging, get_logger
 from core.observability.metrics import HTTP_REQUEST_COUNT, HTTP_REQUEST_DURATION_SECONDS
@@ -101,6 +103,12 @@ app.include_router(dev_viewer_router)
 app.include_router(ingest_router)
 app.include_router(ledger_router)
 app.include_router(manifests_router)
+app.include_router(sse_router)
+
+# Mount static assets directory
+_static_dir = Path(__file__).parent / "static"
+if _static_dir.exists():
+    app.mount("/static", StaticFiles(directory=_static_dir), name="static")
 
 
 @app.get(
