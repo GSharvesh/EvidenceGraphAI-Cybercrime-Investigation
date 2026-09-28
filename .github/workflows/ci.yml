@@ -77,21 +77,15 @@ jobs:
           pip install -e .[dev]
       - name: Start Neo4j for Graph Validation
         run: docker compose -f infra/docker/docker-compose.yml up -d neo4j
-
-      - name: Wait for Services Health
+      - name: Wait for Neo4j Health
         run: |
           echo "Waiting for Neo4j..."
           until [ "$(docker inspect --format='{{.State.Health.Status}}' evidencegraphai-neo4j 2>/dev/null)" == "healthy" ]; do
             sleep 3
           done
-          echo "Waiting for PostgreSQL..."
-          until [ "$(docker inspect --format='{{.State.Health.Status}}' evidencegraphai-postgres 2>/dev/null)" == "healthy" ]; do
-            sleep 3
-          done
+          echo "Neo4j is healthy."
       - name: Seed Neo4j Ontology (Phase 0 + Phase 1 Indexes)
         run: python infra/scripts/seed_ontology.py
-      - name: Apply PostgreSQL Migrations (Custody Ledger)
-        run: python scripts/migrate_postgres.py
       - name: Run Integration Tests
         run: |
           pytest tests/unit tests/integration -v \
