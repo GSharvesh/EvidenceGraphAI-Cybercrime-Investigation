@@ -75,8 +75,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
-      - name: Start Services with Docker Compose
-        run: docker compose -f infra/docker/docker-compose.yml up -d
+      - name: Start Neo4j for Graph Validation
+        run: docker compose -f infra/docker/docker-compose.yml up -d neo4j
+
       - name: Wait for Services Health
         run: |
           echo "Waiting for Neo4j..."
