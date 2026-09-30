@@ -11,14 +11,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from api.routes.attack_mapper import router as attack_mapper_router
 from api.routes.dev_viewer import router as dev_viewer_router
+from api.routes.graph import _guard_dev_endpoint
 from api.routes.graph import router as graph_router
 from api.routes.health import router as health_router
 from api.routes.ingest import router as ingest_router
 from api.routes.ledger import router as ledger_router
 from api.routes.manifests import router as manifests_router
 from api.routes.metrics import router as metrics_router
+from api.routes.sandbox import router as sandbox_router
 from api.routes.sse import router as sse_router
+from api.routes.vulnerability import router as vulnerability_router
 from core.config.settings import get_settings
 from core.logging.logger import configure_logging, get_logger
 from core.observability.metrics import HTTP_REQUEST_COUNT, HTTP_REQUEST_DURATION_SECONDS
@@ -104,6 +108,10 @@ app.include_router(ingest_router)
 app.include_router(ledger_router)
 app.include_router(manifests_router)
 app.include_router(sse_router)
+# Phase 3 routers
+app.include_router(vulnerability_router)
+app.include_router(sandbox_router)
+app.include_router(attack_mapper_router)
 
 # Mount static assets directory
 _static_dir = Path(__file__).parent / "static"
@@ -117,8 +125,9 @@ if _static_dir.exists():
     summary="Forensic Ingestion & Chain of Custody Portal (developer tool)",
     include_in_schema=True,
 )
-def serve_ingestion_portal() -> HTMLResponse:
+def serve_ingestion_portal(request: Request) -> HTMLResponse:
     """Serves the developer Forensic Ingest Console single-page interface."""
+    _guard_dev_endpoint(request, settings)
     portal_path = Path(__file__).parent / "static" / "ingestion_portal.html"
     if not portal_path.exists():
         return HTMLResponse(
@@ -126,6 +135,24 @@ def serve_ingestion_portal() -> HTMLResponse:
             status_code=status.HTTP_404_NOT_FOUND,
         )
     return HTMLResponse(content=portal_path.read_text(encoding="utf-8"))
+
+
+@app.get(
+    "/dev/vulnerability-dashboard",
+    response_class=HTMLResponse,
+    summary="Vulnerability Intelligence Dashboard (Phase 3)",
+    include_in_schema=True,
+)
+def serve_vulnerability_dashboard(request: Request) -> HTMLResponse:
+    """Serves the Vulnerability Intelligence Dashboard single-page application."""
+    _guard_dev_endpoint(request, settings)
+    dashboard_path = Path(__file__).parent / "static" / "vulnerability_dashboard.html"
+    if not dashboard_path.exists():
+        return HTMLResponse(
+            content="<h3>Vulnerability dashboard not found</h3>",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return HTMLResponse(content=dashboard_path.read_text(encoding="utf-8"))
 
 
 @app.get("/", summary="Root application metadata")

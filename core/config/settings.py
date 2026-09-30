@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -80,7 +80,7 @@ class Settings(BaseSettings):
         description="If true, source_agent must be in KNOWN_AGENTS list",
     )
     known_agents: str = Field(
-        default="system,manual",
+        default="system,manual,vulnerability_intelligence,threat_reconstruction,sandbox_replay,attack_mapper",
         description="Comma-separated allowlist of known agent names (used in strict mode)",
     )
 
@@ -122,11 +122,106 @@ class Settings(BaseSettings):
     # Evidence Manifest Configuration (Phase 2)
     manifest_signing_key: str = Field(
         default="dev-insecure-manifest-signing-key-32b",
-        description="HMAC/Ed25519 key for signing Section 65B Evidence Manifests",
+        description="HMAC key for signing Section 65B / Section 63 Evidence Manifests",
+    )
+    manifest_signing_algorithm: str = Field(
+        default="HMAC-SHA256",
+        description="Default signing algorithm: HMAC-SHA256 or Ed25519",
+    )
+    manifest_signing_private_key: str | None = Field(
+        default=None,
+        description="Hex-encoded 32-byte Ed25519 private signing key (optional/prod)",
+    )
+    manifest_signing_public_key: str | None = Field(
+        default=None,
+        description="Hex-encoded 32-byte Ed25519 public verification key (optional/prod)",
     )
     manifest_generator_identity: str = Field(
         default="EvidenceGraphAI",
         description="Identity of the Evidence Manifest generator",
+    )
+    manifest_default_legal_framework: str = Field(
+        default="Section 65B Indian Evidence Act / BNSS 2023",
+        description="Default statutory framework name for evidence manifests",
+    )
+    manifest_default_legal_declaration: str | None = Field(
+        default=None,
+        description="Custom default statutory legal certificate declaration text (None = built-in template)",
+    )
+
+    @model_validator(mode="after")
+    def validate_production_credentials(self) -> "Settings":
+        """Ensures insecure development defaults cannot be silently used in production."""
+        if self.app_env.lower() in ("production", "prod"):
+            insecure_defaults = [
+                (
+                    self.manifest_signing_key == "dev-insecure-manifest-signing-key-32b"
+                    or len(self.manifest_signing_key) < 32,
+                    "MANIFEST_SIGNING_KEY must be a secure key of at least 32 characters in production",
+                ),
+                (
+                    self.neo4j_password in ("devpassword123", ""),
+                    "NEO4J_PASSWORD must not use development default credentials in production",
+                ),
+                (
+                    self.postgres_password in ("devpassword123", ""),
+                    "POSTGRES_PASSWORD must not use development default credentials in production",
+                ),
+                (
+                    self.minio_access_key == "minioadmin"
+                    or self.minio_secret_key == "minioadmin",
+                    "MINIO credentials must not use default admin credentials in production",
+                ),
+                (
+                    self.manifest_signing_algorithm.upper() == "ED25519"
+                    and (
+                        not self.manifest_signing_private_key
+                        or len(self.manifest_signing_private_key) != 64
+                    ),
+                    "MANIFEST_SIGNING_PRIVATE_KEY must be a valid 64-character hex Ed25519 key when Ed25519 algorithm is selected in production",
+                ),
+            ]
+            for is_insecure, message in insecure_defaults:
+                if is_insecure:
+                    raise ValueError(f"Insecure production configuration: {message}")
+        return self
+
+    # --- Phase 3 Settings ---
+
+    # NVD API Configuration
+    nvd_api_key: str = Field(
+        default="",
+        description="NVD API 2.0 key (optional; anonymous rate-limit: 5 req/30s, with key: 50 req/30s)",
+    )
+    nvd_base_url: str = Field(
+        default="https://services.nvd.nist.gov/rest/json/cves/2.0",
+        description="NVD CVE API 2.0 base URL",
+    )
+    nvd_cache_ttl_days: int = Field(
+        default=7,
+        description="CVE cache TTL in days; stale entries are re-fetched from NVD",
+    )
+    nvd_request_timeout: int = Field(
+        default=30,
+        description="NVD API request timeout in seconds",
+    )
+    nvd_max_retries: int = Field(
+        default=3,
+        description="Maximum retry attempts for failed NVD API calls",
+    )
+
+    # Sandbox Configuration
+    sandbox_compose_file: str = Field(
+        default="infra/sandbox/docker-compose.yml",
+        description="Path to the sandbox Docker Compose file",
+    )
+    sandbox_replay_timeout: int = Field(
+        default=300,
+        description="Maximum sandbox replay duration in seconds",
+    )
+    sandbox_telemetry_dir: str = Field(
+        default="/tmp/evidencegraphai/sandbox",
+        description="Host path for sandbox telemetry output (mounted volume)",
     )
 
 

@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import unicodedata
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any
@@ -40,8 +41,24 @@ class ChainVerificationResult(BaseModel):
     error_details: dict[str, Any] | None = None
 
 
+def _normalize_obj(obj: Any) -> Any:
+    """Recursively normalizes Unicode strings to NFC form."""
+    if isinstance(obj, str):
+        return unicodedata.normalize("NFC", obj)
+    elif isinstance(obj, dict):
+        return {
+            (
+                unicodedata.normalize("NFC", k) if isinstance(k, str) else k
+            ): _normalize_obj(v)
+            for k, v in obj.items()
+        }
+    elif isinstance(obj, list | tuple):
+        return [_normalize_obj(item) for item in obj]
+    return obj
+
+
 def canonical_serialize(data: dict[str, Any]) -> str:
-    """Serializes a dictionary into a deterministic, sorted, compact JSON string.
+    """Serializes a dictionary into a deterministic, sorted, compact JSON string with Unicode NFC normalization.
 
     Args:
         data: Arbitrary dictionary.
@@ -49,7 +66,14 @@ def canonical_serialize(data: dict[str, Any]) -> str:
     Returns:
         Canonical JSON string representation.
     """
-    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    normalized = _normalize_obj(data)
+    return json.dumps(
+        normalized,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    )
 
 
 def compute_entry_hash(

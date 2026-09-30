@@ -79,8 +79,17 @@ class ArtifactVerifier:
                 message=f"No custody ledger entries found for evidence ID '{evidence_id}'",
             )
 
-        # Get latest recorded artifact sha256
-        expected_sha256 = entries[-1].sha256
+        # Get the artifact's SHA256 from the most recent artifact action (INGEST, ANONYMIZE, or DERIVE)
+        # to ensure subsequent actions like EXPORT or VERIFY do not mask the artifact's actual hash.
+        artifact_entry = next(
+            (
+                e
+                for e in reversed(entries)
+                if e.action in ("INGEST", "ANONYMIZE", "DERIVE")
+            ),
+            entries[0],
+        )
+        expected_sha256 = artifact_entry.sha256
 
         try:
             artifact_bytes = self.storage.get_object(evidence_id, expected_sha256)

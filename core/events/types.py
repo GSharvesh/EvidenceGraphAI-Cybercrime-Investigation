@@ -74,3 +74,38 @@ class StatusEvent(Event):
     redis: bool = False
     ledger_intact: bool = False
     ledger_entries: int = 0
+
+
+class CVEAnalyzedEvent(Event):
+    """Event emitted when a CVE has been analyzed by the Vulnerability Intelligence Agent."""
+
+    event_type: str = "cve_analyzed"
+    cve_id: str
+    node_id: str
+    cvss_score: float | None = None
+    severity: str | None = None
+    technique_ids: list[str] = Field(default_factory=list)
+    actor: str = "vulnerability_intelligence"
+
+
+class BlueprintGeneratedEvent(Event):
+    """Event emitted when a threat reconstruction blueprint has been generated."""
+
+    event_type: str = "blueprint_generated"
+    blueprint_id: str
+    cve_id: str
+    technique_count: int = 0
+    actor: str = "threat_reconstruction"
+
+
+class ReplaySessionEvent(Event):
+    """Event emitted on sandbox replay lifecycle transitions."""
+
+    event_type: str = "replay_session"
+    session_id: str
+    blueprint_id: str
+    cve_id: str
+    status: str  # pending, running, completed, failed
+    confirmed_count: int = 0
+    refuted_count: int = 0
+    actor: str = "sandbox_replay"

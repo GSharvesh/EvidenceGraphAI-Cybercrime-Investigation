@@ -150,3 +150,99 @@ def test_verify_chain_detects_broken_continuity() -> None:
     assert res.is_valid is False
     assert res.broken_at_id == 3
     assert res.error_details["type"] == "CONTINUITY_BREAK"
+
+
+def test_verify_chain_detects_reordered_entries() -> None:
+    """Verifies that reordering blocks in the chain breaks continuity."""
+    entries: list[dict] = []
+    prev_hash = GENESIS_HASH
+
+    for i in range(1, 4):
+        ts = f"2026-01-0{i}T00:00:00+00:00"
+        eh = compute_entry_hash(
+            evidence_id=f"EV-{i}",
+            action="INGEST",
+            actor="agent-1",
+            timestamp=ts,
+            sha256=f"hash_{i}",
+            previous_hash=prev_hash,
+        )
+        entries.append(
+            {
+                "id": i,
+                "evidence_id": f"EV-{i}",
+                "action": "INGEST",
+                "actor": "agent-1",
+                "timestamp": ts,
+                "sha256": f"hash_{i}",
+                "previous_hash": prev_hash,
+                "entry_hash": eh,
+            }
+        )
+        prev_hash = eh
+
+    # Swap entries 1 and 2
+    reordered = [entries[0], entries[2], entries[1]]
+    res = verify_chain(reordered)
+    assert res.is_valid is False
+
+
+def test_verify_chain_detects_tampered_metadata() -> None:
+    """Verifies that mutating metadata dict breaks entry hash verification."""
+    ts = "2026-01-01T00:00:00+00:00"
+    eh = compute_entry_hash(
+        evidence_id="EV-1",
+        action="INGEST",
+        actor="agent-1",
+        timestamp=ts,
+        sha256="hash_1",
+        previous_hash=GENESIS_HASH,
+        metadata={"key": "original"},
+    )
+    entry = {
+        "id": 1,
+        "evidence_id": "EV-1",
+        "action": "INGEST",
+        "actor": "agent-1",
+        "timestamp": ts,
+        "sha256": "hash_1",
+        "previous_hash": GENESIS_HASH,
+        "entry_hash": eh,
+        "metadata": {"key": "tampered"},
+    }
+    res = verify_chain([entry])
+    assert res.is_valid is False
+    assert res.broken_at_id == 1
+    assert res.error_details["type"] == "HASH_MISMATCH"
+
+
+def test_verify_chain_detects_tampered_timestamp() -> None:
+    """Verifies that changing timestamp in entry breaks hash verification."""
+    ts = "2026-01-01T00:00:00+00:00"
+    eh = compute_entry_hash(
+        evidence_id="EV-1",
+        action="INGEST",
+        actor="agent-1",
+        timestamp=ts,
+        sha256="hash_1",
+        previous_hash=GENESIS_HASH,
+    )
+    entry = {
+        "id": 1,
+        "evidence_id": "EV-1",
+        "action": "INGEST",
+        "actor": "agent-1",
+        "timestamp": "2026-01-02T00:00:00+00:00",
+        "sha256": "hash_1",
+        "previous_hash": GENESIS_HASH,
+        "entry_hash": eh,
+    }
+    res = verify_chain([entry])
+    assert res.is_valid is False
+
+
+def test_verify_chain_empty_ledger() -> None:
+    """Verifies that an empty ledger sequence passes verification trivially."""
+    res = verify_chain([])
+    assert res.is_valid is True
+    assert res.total_entries == 0

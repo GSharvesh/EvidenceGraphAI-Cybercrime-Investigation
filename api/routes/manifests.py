@@ -1,8 +1,8 @@
-"""Section 65B Evidence Manifest API endpoints."""
+"""Section 65B / Section 63 Evidence Manifest API endpoints."""
 
 import json
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
 from api.dependencies import get_manifest_generator, get_minio_client
@@ -17,12 +17,36 @@ class CreateManifestRequest(BaseModel):
     """Request payload for creating an Evidence Manifest."""
 
     evidence_ids: list[str] = Field(
-        ..., min_length=1, description="List of evidence IDs to certify"
+        ...,
+        min_length=1,
+        max_length=100,
+        description="List of evidence IDs to certify",
     )
     generator_identity: str | None = Field(
-        None, description="Certifying officer or organization name"
+        None,
+        max_length=256,
+        description="Certifying officer or organization name",
     )
-    actor: str = Field("system", description="Actor generating the manifest")
+    actor: str = Field(
+        "system",
+        max_length=128,
+        description="Actor generating the manifest",
+    )
+    legal_framework: str | None = Field(
+        None,
+        max_length=256,
+        description="Statutory legal framework name (e.g. BSA 2023 / IEA 1872)",
+    )
+    legal_declaration: str | None = Field(
+        None,
+        max_length=10000,
+        description="Custom statutory legal certificate declaration text",
+    )
+    signature_algorithm: str | None = Field(
+        None,
+        max_length=32,
+        description="Signing algorithm: HMAC-SHA256 or Ed25519 (defaults to server configuration)",
+    )
 
 
 class ManifestVerificationResponse(BaseModel):
@@ -38,19 +62,22 @@ class ManifestVerificationResponse(BaseModel):
     "/manifests",
     response_model=EvidenceManifest,
     status_code=status.HTTP_201_CREATED,
-    summary="Generate and sign a Section 65B Evidence Manifest",
+    summary="Generate and sign a Section 65B / Section 63 Evidence Manifest",
 )
 def create_manifest(
     payload: CreateManifestRequest,
     generator: ManifestGenerator = Depends(get_manifest_generator),
 ) -> EvidenceManifest:
-    """Generates a legally formatted Section 65B manifest with cryptographic signatures,
+    """Generates a legally formatted Section 65B / Section 63 manifest with cryptographic signatures,
     full chain of custody, and integrity proofs, and archives it in MinIO."""
     try:
         manifest = generator.generate_manifest(
             evidence_ids=payload.evidence_ids,
             generator_identity=payload.generator_identity,
             actor=payload.actor,
+            legal_framework=payload.legal_framework,
+            legal_declaration=payload.legal_declaration,
+            signature_algorithm=payload.signature_algorithm,
         )
         return manifest
     except ManifestGenerationError as exc:
@@ -73,7 +100,7 @@ def get_manifest_by_id(
     manifest_id: str,
     storage: MinioClient = Depends(get_minio_client),
 ) -> EvidenceManifest:
-    """Retrieves an archived Section 65B Evidence Manifest JSON from MinIO."""
+    """Retrieves an archived Section 65B / Section 63 Evidence Manifest JSON from MinIO."""
     try:
         data_bytes = storage.get_manifest(manifest_id)
         manifest_data = json.loads(data_bytes.decode("utf-8"))
@@ -92,10 +119,30 @@ def get_manifest_by_id(
 )
 def verify_manifest_signature(
     manifest: EvidenceManifest,
+    public_key: str | None = Query(
+        None,
+        description="Optional public verification key (for Ed25519 hex)",
+    ),
     generator: ManifestGenerator = Depends(get_manifest_generator),
 ) -> ManifestVerificationResponse:
     """Verifies HMAC/Ed25519 signature of the provided Evidence Manifest document."""
-    is_valid = generator.verify_manifest(manifest)
+    # Defend against algorithm confusion / downgrade attacks
+    if public_key is not None and manifest.signature_algorithm.upper() != "ED25519":
+        return ManifestVerificationResponse(
+            manifest_id=manifest.manifest_id,
+            is_valid=False,
+            signature_algorithm=manifest.signature_algorithm,
+            message=(
+                "Algorithm confusion rejected: public key parameter cannot be used "
+                "to verify symmetric HMAC-SHA256 manifests"
+            ),
+        )
+
+    is_valid = generator.verify_manifest(
+        manifest,
+        key=public_key,
+        is_public_key=(public_key is not None),
+    )
     return ManifestVerificationResponse(
         manifest_id=manifest.manifest_id,
         is_valid=is_valid,
@@ -103,6 +150,6 @@ def verify_manifest_signature(
         message=(
             "Signature is authentic and verified"
             if is_valid
-            else "Signature verification failed: manifest may have been altered"
+            else "Signature verification failed: manifest may have been altered or verification key is invalid"
         ),
     )

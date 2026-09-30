@@ -78,9 +78,10 @@ class CustodyLedger:
         try:
             with self.db.get_connection() as conn:
                 with conn.cursor() as cur:
-                    # Lock table briefly in share row exclusive mode or fetch latest entry inside transaction
+                    # Explicit table lock ensures strict linear serialization of hash chain appends under concurrency
+                    cur.execute("LOCK TABLE custody_ledger IN SHARE ROW EXCLUSIVE MODE")
                     cur.execute(
-                        "SELECT id, entry_hash FROM custody_ledger ORDER BY id DESC LIMIT 1 FOR UPDATE"
+                        "SELECT id, entry_hash FROM custody_ledger ORDER BY id DESC LIMIT 1"
                     )
                     latest_row = cur.fetchone()
                     previous_hash = (

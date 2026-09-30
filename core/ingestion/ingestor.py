@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from core.config.settings import Settings, get_settings
 from core.custody.ledger import CustodyLedger
 from core.graph.client import GraphClient
+from core.graph.provenance import normalize_agent_name
 from core.ingestion.detector import (
     DetectedType,
     FileTypeDetectionResult,
@@ -206,6 +207,10 @@ class ArtifactIngestor:
             raise IngestionError(f"Artifact storage failed: {exc}") from exc
 
         # 6. Neo4j EvidenceArtifact Node Creation
+        #    Normalize the human-readable actor into a valid source_agent identifier
+        #    for the graph schema. The original actor string is preserved in the
+        #    custody ledger for full audit fidelity.
+        graph_agent = normalize_agent_name(actor)
         node_id = evidence_id
         try:
             self.graph.create_node(
@@ -215,7 +220,7 @@ class ArtifactIngestor:
                     "artifact_type": artifact_type,
                     "storage_path": storage_path,
                     "hash_sha256": final_sha256,
-                    "source_agent": actor,
+                    "source_agent": graph_agent,
                     "source_artifact_id": None,
                     "confidence": 1.0,
                 },

@@ -159,7 +159,7 @@ def check_environment() -> None:
         log_ok("Virtual environment verified.")
 
 
-def check_and_start_docker(no_docker: bool) -> None:
+def check_and_start_docker(no_docker: bool, with_sandbox: bool = False) -> None:
     log_step("2/7", "Infrastructure")
     if no_docker:
         log_info("--no-docker specified: Skipping Docker Compose management.")
@@ -210,6 +210,21 @@ def check_and_start_docker(no_docker: bool) -> None:
         )
         sys.exit(1)
     log_ok("Docker Compose services up and running.")
+
+    if with_sandbox:
+        sandbox_compose = REPO_ROOT / "infra" / "sandbox" / "docker-compose.yml"
+        if sandbox_compose.exists():
+            log_info("Starting isolated Sandbox Docker services...")
+            sb_res = subprocess.run(
+                ["docker", "compose", "-f", str(sandbox_compose), "up", "-d"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if sb_res.returncode == 0:
+                log_ok("Sandbox Docker services up.")
+            else:
+                log_info(f"Note: Sandbox services could not start: {sb_res.stderr}")
 
 
 def wait_for_infrastructure(timeout: int = 120) -> None:
@@ -449,6 +464,7 @@ def launch_browser_and_print_urls(host: str, port: int, no_browser: bool) -> Non
     base_url = f"http://localhost:{port}"
     portal_url = f"{base_url}/dev/ingestion-portal"
     viewer_url = f"{base_url}/dev/viewer"
+    vuln_url = f"{base_url}/dev/vulnerability-dashboard"
     docs_url = f"{base_url}/docs"
     redoc_url = f"{base_url}/redoc"
 
@@ -459,25 +475,34 @@ def launch_browser_and_print_urls(host: str, port: int, no_browser: bool) -> Non
 ==============================================================================={RESET}
 
   {BOLD}[Interactive Developer Frontends]{RESET}
-  * Forensic Ingest Console : {MAGENTA}{portal_url}{RESET} (Primary)
-  * Graph Viewer            : {MAGENTA}{viewer_url}{RESET}
-  * API Docs (Swagger UI)   : {MAGENTA}{docs_url}{RESET}
-  * ReDoc Documentation     : {MAGENTA}{redoc_url}{RESET}
+  * Vulnerability Intelligence : {MAGENTA}{vuln_url}{RESET} (Phase 3)
+  * Forensic Ingest Console    : {MAGENTA}{portal_url}{RESET} (Phase 2)
+  * Graph Viewer               : {MAGENTA}{viewer_url}{RESET} (Phase 1)
+  * API Docs (Swagger UI)      : {MAGENTA}{docs_url}{RESET}
+  * ReDoc Documentation        : {MAGENTA}{redoc_url}{RESET}
 
-  {BOLD}[Real-Time SSE Event Streams (Phase 2.1)]{RESET}
-  * Ledger Stream           : {CYAN}{base_url}/sse/ledger{RESET}
-  * Graph Stream            : {CYAN}{base_url}/sse/graph{RESET}
-  * Health Stream           : {CYAN}{base_url}/sse/status{RESET}
+  {BOLD}[Real-Time SSE Event Streams]{RESET}
+  * Vulnerability Stream       : {CYAN}{base_url}/sse/vulnerability{RESET}
+  * Sandbox Replay Stream      : {CYAN}{base_url}/sse/sandbox{RESET}
+  * Ledger Stream              : {CYAN}{base_url}/sse/ledger{RESET}
+  * Graph Stream               : {CYAN}{base_url}/sse/graph{RESET}
+  * Health Stream              : {CYAN}{base_url}/sse/status{RESET}
+
+  {BOLD}[Phase 3 Vulnerability & Sandbox Endpoints]{RESET}
+  * Vulnerability Analyze API  : POST {base_url}/vulnerability/analyze
+  * Threat Blueprint Generator : POST {base_url}/vulnerability/blueprint
+  * Sandbox Replay Launcher    : POST {base_url}/sandbox/replay
+  * MITRE ATT&CK Mapper        : POST {base_url}/attack/map
 
   {BOLD}[Forensic Ingestion & Custody Endpoints]{RESET}
-  * Multipart Ingestion API : POST {base_url}/ingest
-  * Custody Ledger Trail    : GET  {base_url}/ledger
-  * Ledger Verifier         : GET  {base_url}/ledger/verify
-  * Section 65B Manifest    : POST {base_url}/manifests/generate
+  * Multipart Ingestion API    : POST {base_url}/ingest
+  * Custody Ledger Trail       : GET  {base_url}/ledger
+  * Ledger Verifier            : GET  {base_url}/ledger/verify
+  * Section 65B Manifest       : POST {base_url}/manifests/generate
 
   {BOLD}[Infrastructure Consoles]{RESET}
-  * Neo4j Browser           : http://localhost:7474 (neo4j / evidencegraphai_dev)
-  * MinIO Storage Console   : http://localhost:9001 (minioadmin / minioadmin)
+  * Neo4j Browser              : http://localhost:7474 (neo4j / evidencegraphai_dev)
+  * MinIO Storage Console      : http://localhost:9001 (minioadmin / minioadmin)
 
 {CYAN}==============================================================================={RESET}
 """
@@ -545,13 +570,19 @@ def main() -> None:
         default=False,
         help="Start Uvicorn without auto-reload",
     )
+    parser.add_argument(
+        "--with-sandbox",
+        action="store_true",
+        default=False,
+        help="Also start the isolated Phase 3 Docker sandbox stack (victim, attacker, collector)",
+    )
     args = parser.parse_args()
 
     os.chdir(str(REPO_ROOT))
     print_banner()
 
     check_environment()
-    check_and_start_docker(no_docker=args.no_docker)
+    check_and_start_docker(no_docker=args.no_docker, with_sandbox=args.with_sandbox)
     wait_for_infrastructure(timeout=120)
     run_database_migrations_and_schema()
     seed_sample_data(seed=args.seed)

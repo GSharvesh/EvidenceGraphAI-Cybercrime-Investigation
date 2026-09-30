@@ -102,6 +102,10 @@ def init_test_databases() -> None:
         settings = get_settings()
         client = PostgresClient(settings=settings)
         apply_migrations(client)
+    if _NEO4J_UP:
+        from infra.scripts.seed_ontology import seed_ontology
+
+        seed_ontology()
 
 
 @pytest.fixture(scope="function")
@@ -130,7 +134,7 @@ def test_storage() -> MinioClient:
 
 @pytest.fixture(scope="function", autouse=False)
 def clean_test_graph(test_client: GraphClient) -> Generator[None, None, None]:
-    """Deletes all TestPhase1_* / TestPhase2_* labelled nodes before and after each test."""
+    """Deletes all TestPhase* / TEST_* labelled nodes before and after each test."""
     _cleanup_graph(test_client)
     yield
     _cleanup_graph(test_client)
@@ -138,5 +142,11 @@ def clean_test_graph(test_client: GraphClient) -> Generator[None, None, None]:
 
 def _cleanup_graph(client: GraphClient) -> None:
     client.query(
-        "MATCH (n) WHERE n.id STARTS WITH 'TestPhase1_' OR n.id STARTS WITH 'TestPhase2_' DETACH DELETE n"
+        "MATCH (n) WHERE n.id STARTS WITH 'TestPhase1_' "
+        "OR n.id STARTS WITH 'TestPhase2_' "
+        "OR n.id STARTS WITH 'TestPhase3_' "
+        "OR n.id STARTS WITH 'TESTPHASE3_' "
+        "OR n.id STARTS WITH 'TEST_' "
+        "OR n.id STARTS WITH 'Test_' "
+        "DETACH DELETE n"
     )

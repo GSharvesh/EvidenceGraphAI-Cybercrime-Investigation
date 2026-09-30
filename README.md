@@ -4,17 +4,17 @@
 
 ---
 
-## Current Status: Phase 2 Completed (Ingestion & Chain of Custody)
+## Current Status: Phase 3 Completed (Vulnerability Intelligence & Threat Reconstruction)
 
-Phase 2 establishes the production-grade **Ingestion & Chain of Custody** subsystem:
-- **Heterogeneous Forensic Ingest Pipeline**: Ingests PCAPs, JSON vulnerability records, PE/ELF/APK binaries, logs, and X.509 certificates.
-- **Append-Only PostgreSQL Custody Ledger**: Database-trigger enforced immutable audit trail with sequential SHA256 cryptographic hash chaining.
-- **Section 65B Evidence Manifest Generator**: Digitally signed electronic evidence certificates complying with Section 65B of the Indian Evidence Act.
-- **DPDP Act 2023 Privacy Filters**: Automated detection and masking/pseudonymization of Aadhaar, PAN, phone, email, and payment cards across PCAPs and logs.
-- **Forensic Ingest Console**: Modern developer UI with live Web Crypto hashing, timeline visualization, and Cytoscape.js graph rendering at `/dev/ingestion-portal`.
-- **Developer Viewer**: Interactive graph visualizer with localhost security gating at `/dev/viewer`.
+Phase 3 establishes the **Vulnerability Intelligence, Threat Blueprint Reconstruction, and Sandbox Replay** subsystem:
+- **Vulnerability Intelligence Agent**: Full NVD REST API v2.0 ingest with rate-limiting, exponential backoff, PostgreSQL `cve_cache`, CVSS v3.1 vector parsing, CWE identification, and automated Git patch analysis.
+- **Threat Reconstruction Agent**: Deterministic multi-stage attack lifecycle blueprint generation with exponential phase confidence decay and graph materialization (`EXPECTED_TO_LEAD_TO` with `status="hypothesized"`).
+- **Isolated Sandbox Replay Agent**: Air-gapped Docker Compose attack sandbox (`internal: true`), automated sidecar PCAP packet capture (`tcpdump`), dry-run synthetic execution mode, and automated forensic custody ingestion.
+- **MITRE ATT&CK Mapper**: High-precision compiled regex pattern engine for automated mapping of unstructured logs, commands, and payloads to ATT&CK techniques (`MAPS_TO`).
+- **Vulnerability Intelligence Dashboard**: Modern Single-Page Application at `/dev/vulnerability-dashboard` (or `/vulnerability/dashboard`) with live SSE stream, interactive CVE explorer, blueprint visualizer, dry-run replay console, and ATT&CK mapper.
+- **Forensic Ingest Console & Graph Viewer**: Full integration across `/dev/ingestion-portal` and `/dev/viewer`.
 
-For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [Phase 2 Completion Report](docs/reports/phase2_completion_report.md).
+For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [Phase 3 Completion Report](docs/reports/phase3_completion_report.md).
 
 ---
 
@@ -25,6 +25,8 @@ For detailed roadmap status, see [Phases Roadmap](docs/roadmap/phases.md) and [P
 - **Metadata & Ledger**: PostgreSQL 16
 - **Cache & Queue**: Redis 7
 - **Artifact Storage**: MinIO / S3
+- **Vulnerability Data**: NVD REST API v2.0
+- **Ontology & Framework**: MITRE ATT&CK Enterprise Matrix
 - **API Layer**: FastAPI + Uvicorn
 - **Validation & Models**: Pydantic 2.x & pydantic-settings 2.x
 - **Logging**: Structlog (Structured JSON)
@@ -54,25 +56,21 @@ source .venv/bin/activate
 pip install -e .[dev]
 ```
 
-### 3. Running Local Infrastructure
+### 3. Running Local Orchestrator
 ```bash
-# Start Docker Compose services (Neo4j, Postgres, Redis, MinIO)
-make docker-up
-
-# Seed Neo4j ontology constraints and indexes
-python infra/scripts/seed_ontology.py
+# Start all infrastructure, run migrations, seed sample CVEs, and launch all frontends
+python scripts/start_local.py --seed
 ```
 
-### 4. Running API Server
+### 4. Running Validation Suite
 ```bash
-uvicorn api.main:app --reload --port 8000
-```
+# Run unit tests and integration tests
+pytest tests/unit tests/integration -v --cov=core
 
-Access API documentation at `http://localhost:8000/docs`.
-
-### 5. Running Validation Suite
-```bash
-make validate
+# Run code format and lint checks
+black --check .
+ruff check .
+mypy core api
 ```
 
 ---
@@ -81,10 +79,15 @@ make validate
 
 - [Architecture Overview](docs/architecture/overview.md)
 - [Architecture Decision Records (ADRs)](docs/architecture/decisions/)
-- [Ontology Reference](docs/ontology/reference.md)
-- [Developer Setup Guide](docs/setup/development.md)
+- [Vulnerability Intelligence Agent](docs/agents/vulnerability-intelligence.md)
+- [Threat Reconstruction Agent](docs/agents/threat-reconstruction.md)
+- [Sandbox Replay Agent](docs/agents/sandbox-replay.md)
+- [ATT&CK Mapper Agent](docs/agents/attack-mapper.md)
+- [Sandbox Architecture](docs/sandbox/architecture.md)
+- [Vulnerability Dashboard](docs/frontend/vulnerability-dashboard.md)
+- [Forensic Ingest Portal](docs/frontend/ingestion-portal.md)
+- [Developer Graph Viewer](docs/graph/developer-viewer.md)
 - [Phases Roadmap](docs/roadmap/phases.md)
-- [Future Requirements](docs/roadmap/future-requirements.md)
 
 ---
 

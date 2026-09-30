@@ -213,6 +213,28 @@ def test_manifest_endpoints(
         manifest = r1.json()
         assert manifest["manifest_id"] == "MANIFEST-TEST-1"
 
+        # POST /manifests with custom legal framework
+        r1_custom = client.post(
+            "/manifests",
+            json={
+                "evidence_ids": ["EV-API-TEST-1"],
+                "legal_framework": "Section 63 Bharatiya Sakshya Adhiniyam, 2023 / BNSS 2023",
+                "generator_identity": "State Forensics Laboratory",
+            },
+        )
+        assert r1_custom.status_code == 201
+
+        # POST /manifests with Ed25519 algorithm
+        r1_ed25519 = client.post(
+            "/manifests",
+            json={
+                "evidence_ids": ["EV-API-TEST-1"],
+                "signature_algorithm": "Ed25519",
+                "generator_identity": "State Forensics Laboratory",
+            },
+        )
+        assert r1_ed25519.status_code == 201
+
         # GET /manifests/MANIFEST-TEST-1
         r2 = client.get("/manifests/MANIFEST-TEST-1")
         assert r2.status_code == 200
@@ -221,6 +243,18 @@ def test_manifest_endpoints(
         r3 = client.post("/manifests/verify", json=manifest)
         assert r3.status_code == 200
         assert r3.json()["is_valid"] is True
+
+        # POST /manifests/verify with public_key query parameter rejects HMAC manifest (algorithm confusion defense)
+        r4 = client.post("/manifests/verify?public_key=aabbcc112233", json=manifest)
+        assert r4.status_code == 200
+        assert r4.json()["is_valid"] is False
+        assert "Algorithm confusion rejected" in r4.json()["message"]
+
+        # POST /manifests/verify with public_key query parameter succeeds for Ed25519 manifest
+        ed_manifest = dict(manifest, signature_algorithm="Ed25519")
+        r5 = client.post("/manifests/verify?public_key=aabbcc112233", json=ed_manifest)
+        assert r5.status_code == 200
+        assert r5.json()["is_valid"] is True
     app.dependency_overrides.clear()
 
 

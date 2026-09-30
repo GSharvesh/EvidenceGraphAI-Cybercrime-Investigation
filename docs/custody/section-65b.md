@@ -18,6 +18,9 @@ Under **Section 65B of the Indian Evidence Act, 1872** (and the corresponding el
 
 ---
 
-## 3. Admissibility Guarantee
+## 3. Cryptographic Integrity & Legal Admissibility
 
-By maintaining an unbroken cryptographic hash chain from the moment an artifact enters the system through each transformation and export step, EvidenceGraphAI ensures forensic evidence meets the standard of legal admissibility without risk of repudiation.
+By maintaining an unbroken cryptographic hash chain from the moment an artifact enters the system through each transformation and export step, EvidenceGraphAI establishes mathematical integrity, chain of custody continuity, and cryptographic non-repudiation of electronic records.
+
+> [!IMPORTANT]
+> **Legal Admissibility Distinction**: Cryptographic validity confirms that electronic records are unaltered and accurately tracked. Statutory legal admissibility in court remains a legal determination governed by judicial discretion and procedural compliance under Section 63 of the Bharatiya Sakshya Adhiniyam, 2023 (or Section 65B of the Indian Evidence Act, 1872) read with Section 105 of the Bharatiya Nagarik Suraksha Sanhita, 2023. Cryptographic integrity supports and facilitates statutory compliance, but does not substitute for judicial process.

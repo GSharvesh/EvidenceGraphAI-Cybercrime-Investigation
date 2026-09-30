@@ -55,14 +55,14 @@ def _is_localhost(ip_str: str) -> bool:
 
 
 def _get_client_ip(request: Request) -> str:
-    """Extracts the real client IP from the request."""
-    forwarded_for = request.headers.get("X-Forwarded-For")
-    if forwarded_for:
-        return forwarded_for.split(",")[0].strip()
-    client = request.client
-    if client:
-        return client.host
-    return "unknown"
+    """Extracts client IP, using immediate socket peer unless connecting through a trusted loopback proxy."""
+    peer_ip = request.client.host if request.client else "unknown"
+    # Only trust X-Forwarded-For if the immediate peer connection is verified loopback
+    if _is_localhost(peer_ip):
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            return forwarded_for.split(",")[0].strip()
+    return peer_ip
 
 
 def _guard_dev_endpoint(request: Request, settings: Settings) -> None:
@@ -78,10 +78,19 @@ def _guard_dev_endpoint(request: Request, settings: Settings) -> None:
             detail="Developer graph endpoints are disabled (DEV_VIEWER_ENABLED=false).",
         )
 
+    peer_ip = request.client.host if request.client else "unknown"
     client_ip = _get_client_ip(request)
-    logger.info("Dev endpoint access", path=request.url.path, client_ip=client_ip)
+    logger.info(
+        "Dev endpoint access",
+        path=request.url.path,
+        client_ip=client_ip,
+        peer_ip=peer_ip,
+    )
 
-    if not settings.dev_viewer_allow_remote and not _is_localhost(client_ip):
+    # Both immediate socket peer and resolved client IP must be localhost to prevent header spoofing
+    if not settings.dev_viewer_allow_remote and (
+        not _is_localhost(peer_ip) or not _is_localhost(client_ip)
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=(

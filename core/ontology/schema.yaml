@@ -124,8 +124,8 @@ relationships:
       validation_status: {type: "string", required: false, description: "Validation status"}
 
   MAPS_TO:
-    description: "LogEntry, Malware, or APKSample maps to ATT&CKTechnique"
-    source_types: ["LogEntry", "Malware", "APKSample"]
+    description: "LogEntry, Malware, APKSample, or CVE maps to ATT&CKTechnique"
+    source_types: ["LogEntry", "Malware", "APKSample", "CVE", "EvidenceArtifact"]
     target_types: ["ATT&CKTechnique"]
     properties:
       mapping_confidence: {type: "float", required: false, description: "Mapping confidence score"}
@@ -159,8 +159,8 @@ relationships:
       time_delta_ms: {type: "integer", required: false, description: "Time delta in milliseconds"}
 
   EXPECTED_TO_LEAD_TO:
-    description: "Probabilistic progression between ATT&CKTechnique steps"
-    source_types: ["ATT&CKTechnique"]
+    description: "Probabilistic progression between ATT&CKTechnique steps or from initial CVE"
+    source_types: ["ATT&CKTechnique", "CVE"]
     target_types: ["ATT&CKTechnique"]
     properties:
       probability: {type: "float", required: false, description: "Transition probability"}

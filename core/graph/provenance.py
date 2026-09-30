@@ -40,6 +40,15 @@ from core.graph.exceptions import ProvenanceValidationError
 #: Regex that all source_agent values must satisfy.
 AGENT_NAME_PATTERN: re.Pattern[str] = re.compile(r"^[a-z][a-z0-9_]{2,63}$")
 
+# Characters that should be replaced with underscores during normalization.
+_REPLACE_CHARS: re.Pattern[str] = re.compile(r"[\s\-\.]+")
+
+# Characters that are invalid in agent names (not lowercase alphanumeric or underscore).
+_STRIP_INVALID: re.Pattern[str] = re.compile(r"[^a-z0-9_]")
+
+# Leading digits/underscores that would make the name invalid.
+_STRIP_LEADING: re.Pattern[str] = re.compile(r"^[^a-z]+")
+
 #: Default allowlist used when strict mode is enabled.
 #: Extend via the ``KNOWN_AGENTS`` environment variable (comma-separated).
 DEFAULT_KNOWN_AGENTS: list[str] = ["system", "manual"]
@@ -49,6 +58,75 @@ CONFIDENCE_MIN: float = 0.0
 
 #: Sentinel for the maximum allowed confidence value.
 CONFIDENCE_MAX: float = 1.0
+
+
+# ---------------------------------------------------------------------------
+# Normalization
+# ---------------------------------------------------------------------------
+
+
+def normalize_agent_name(raw: str) -> str:
+    """Deterministically normalize a human-readable identity to a valid source_agent name.
+
+    Transformation rules (applied in order):
+
+    1. Strip leading/trailing whitespace.
+    2. Convert to lowercase.
+    3. Replace hyphens, spaces, and dots with underscores.
+    4. Strip any remaining non-alphanumeric/underscore characters.
+    5. Strip leading digits/underscores so the name starts with ``[a-z]``.
+    6. Collapse consecutive underscores.
+    7. Truncate to 64 characters.
+    8. Pad to minimum 3 characters with trailing underscores if needed.
+
+    If the result is empty after stripping (e.g., all-digit input), falls back
+    to ``"unknown_agent"``.
+
+    The output is guaranteed to match ``^[a-z][a-z0-9_]{2,63}$``.
+
+    Args:
+        raw: Human-readable actor or generator identity string.
+
+    Returns:
+        A valid source_agent identifier.
+
+    Examples:
+        >>> normalize_agent_name("integration-test")
+        'integration_test'
+        >>> normalize_agent_name("My Agent v2.1")
+        'my_agent_v2_1'
+        >>> normalize_agent_name("123numeric")
+        'numeric'
+    """
+    if not raw or not raw.strip():
+        return "unknown_agent"
+
+    name = raw.strip().lower()
+    name = _REPLACE_CHARS.sub("_", name)
+    name = _STRIP_INVALID.sub("", name)
+    name = _STRIP_LEADING.sub("", name)
+
+    # Collapse consecutive underscores
+    while "__" in name:
+        name = name.replace("__", "_")
+
+    # Strip trailing underscores
+    name = name.rstrip("_")
+
+    if not name:
+        return "unknown_agent"
+
+    # Truncate to max 64 characters
+    name = name[:64]
+
+    # Pad to minimum 3 characters
+    while len(name) < 3:
+        name += "_"
+
+    assert AGENT_NAME_PATTERN.match(
+        name
+    ), f"normalize_agent_name produced invalid result '{name}' from '{raw}'"
+    return name
 
 
 # ---------------------------------------------------------------------------

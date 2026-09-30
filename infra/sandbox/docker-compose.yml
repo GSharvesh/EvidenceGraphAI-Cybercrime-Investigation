@@ -1,0 +1,131 @@
+# EvidenceGraphAI — Isolated Sandbox Docker Compose (Phase 3)
+#
+# Creates an ISOLATED, air-gapped sandbox network for safe attack replay and forensic validation.
+# Network uses `internal: true` to prevent any outbound or inbound internet connectivity.
+#
+# Target Services:
+#   - log4j-vulnerable: Java HTTP app with Log4j 2.14.1 (CVE-2021-44228)
+#   - dvwa: Damn Vulnerable Web Application (Web app vulnerabilities)
+#   - juice-shop: OWASP Juice Shop (Modern web app vulnerabilities)
+#   - metasploitable: Linux service stack for network exploitation testing
+#
+# Actor / Telemetry Services:
+#   - attacker: Ubuntu execution container with nmap, curl, netcat, python3
+#   - collector: Continuous packet capture (tcpdump) and system telemetry collector
+
+services:
+  # -------------------------------------------------------------------------
+  # Vulnerable Targets
+  # -------------------------------------------------------------------------
+  log4j-vulnerable:
+    build:
+      context: ./targets/log4j
+      dockerfile: Dockerfile
+    image: evidencegraphai/sandbox-log4j:2.14.1
+    container_name: evidencegraphai-sandbox-log4j
+    networks:
+      - sandbox-net
+    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: evidencegraphai-sandbox-dvwa
+    networks:
+      - sandbox-net
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  juice-shop:
+    image: bkimminich/juice-shop:v15.0.0
+    container_name: evidencegraphai-sandbox-juice-shop
+    networks:
+      - sandbox-net
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  metasploitable:
+    image: tleemcjr/metasploitable2:latest
+    container_name: evidencegraphai-sandbox-metasploitable
+    networks:
+      - sandbox-net
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  # -------------------------------------------------------------------------
+  # Attacker Agent Container
+  # -------------------------------------------------------------------------
+  attacker:
+    image: ubuntu:22.04
+    container_name: evidencegraphai-sandbox-attacker
+    networks:
+      - sandbox-net
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./captures:/captures
+    restart: "no"
+    command: >
+      bash -c "
+        apt-get update -qq && apt-get install -y -qq curl nmap netcat-openbsd python3 dnsutils iputils-ping > /dev/null 2>&1
+        echo 'Attacker ready for controlled simulation.'
+        tail -f /dev/null
+      "
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  # -------------------------------------------------------------------------
+  # Sidecar Telemetry Collector (Network PCAP + System Logs)
+  # -------------------------------------------------------------------------
+  collector:
+    image: ubuntu:22.04
+    container_name: evidencegraphai-sandbox-collector
+    network_mode: "service:attacker"
+    volumes:
+      - ./captures:/captures
+    restart: "no"
+    command: >
+      bash -c "
+        apt-get update -qq && apt-get install -y -qq tcpdump > /dev/null 2>&1
+        echo '[Collector] Starting continuous packet capture on eth0...'
+        tcpdump -i any -s 0 -w /captures/live_replay.pcap -G 300 -W 1 -U 'not port 22' &
+        echo '[Collector] Packet capture active.'
+        tail -f /dev/null
+      "
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+# ---------------------------------------------------------------------------
+# Isolated Network Definition — No internet access (internal: true)
+# ---------------------------------------------------------------------------
+networks:
+  sandbox-net:
+    driver: bridge
+    internal: true
+    name: evidencegraphai-sandbox-isolated
